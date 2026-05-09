@@ -1,40 +1,35 @@
 import { connectDB } from "@/lib/mongodb";
 import { Category } from "@/lib/models";
-import { readDB, writeDB } from "@/lib/jsonDb";
 
 export async function GET() {
   try {
-    const db = await connectDB();
-    if (db) {
-      const categories = await Category.find();
-      return Response.json({ success: true, categories });
-    } else {
-      const localData = await readDB();
-      return Response.json({ success: true, categories: localData.categories });
-    }
+    await connectDB();
+    const categories = await Category.find().sort({ createdAt: -1 });
+    return Response.json({ success: true, categories });
   } catch (error) {
     console.error("Categories fetch error:", error);
-    const localData = await readDB();
-    return Response.json({ success: true, categories: localData.categories });
+    return Response.json({ error: "Failed to fetch categories" }, { status: 500 });
   }
 }
 
 export async function POST(request: Request) {
   try {
     const categoryData = await request.json();
-    const db = await connectDB();
-
-    if (db) {
-      const category = new Category(categoryData);
-      await category.save();
-      return Response.json({ success: true, message: "Category created", category });
-    } else {
-      const localData = await readDB();
-      localData.categories.push(categoryData);
-      await writeDB(localData);
-      return Response.json({ success: true, message: "Category created (saved to server JSON)", category: categoryData });
+    await connectDB();
+    
+    // Check if category exists (using the custom 'id' field)
+    const existing = await Category.findOne({ id: categoryData.id });
+    if (existing) {
+      Object.assign(existing, categoryData);
+      await existing.save();
+      return Response.json({ success: true, message: "Category updated", category: existing });
     }
+
+    const category = new Category(categoryData);
+    await category.save();
+    return Response.json({ success: true, message: "Category created", category });
   } catch (error) {
+    console.error("Category create error:", error);
     return Response.json({ error: "Failed to create category" }, { status: 500 });
   }
 }
@@ -42,20 +37,13 @@ export async function POST(request: Request) {
 export async function DELETE(request: Request) {
   try {
     const { id } = await request.json();
-    const db = await connectDB();
-
-    if (db) {
-      await Category.deleteOne({ id });
-      return Response.json({ success: true, message: "Category deleted" });
-    } else {
-      const localData = await readDB();
-      localData.categories = localData.categories.filter((c: any) => c.id !== id);
-      localData.products = localData.products.filter((p: any) => p.categoryId !== id);
-      await writeDB(localData);
-      return Response.json({ success: true, message: "Category deleted (from server JSON)" });
-    }
+    await connectDB();
+    await Category.deleteOne({ id });
+    return Response.json({ success: true, message: "Category deleted" });
   } catch (error) {
+    console.error("Category delete error:", error);
     return Response.json({ error: "Failed to delete category" }, { status: 500 });
   }
 }
+
 

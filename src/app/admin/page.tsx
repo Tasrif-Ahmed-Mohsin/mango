@@ -57,23 +57,7 @@ export default function AdminPage() {
 }
 
 function AdminContent({ onLogout }: { onLogout: () => void }) {
-  const { categories, products, addCategory, addProduct, removeCategory, removeProduct, syncLocalStorageToServer } = useData();
-  const [syncing, setSyncing] = useState(false);
-  const [syncStatus, setSyncStatus] = useState<string | null>(null);
-
-  const handleSync = async () => {
-    setSyncing(true);
-    setSyncStatus("Syncing local data to server...");
-    try {
-      await syncLocalStorageToServer();
-      setSyncStatus("✅ Sync complete! Data is now universal.");
-      setTimeout(() => setSyncStatus(null), 5000);
-    } catch (err) {
-      setSyncStatus("❌ Sync failed. Please check your connection.");
-    } finally {
-      setSyncing(false);
-    }
-  };
+  const { categories, products, addCategory, addProduct, removeCategory, removeProduct } = useData();
 
   const [catName, setCatName] = useState("");
   const [catImage, setCatImage] = useState<File | null>(null);
@@ -205,27 +189,13 @@ function AdminContent({ onLogout }: { onLogout: () => void }) {
             <div className="h-px flex-1 bg-[#EAE3D5]"></div>
           </div>
           <div className="flex items-center gap-4 ml-4">
-            <button 
-              onClick={handleSync} 
-              disabled={syncing}
-              className="rounded-lg bg-[#2A4026] px-4 py-2 font-bold text-white transition hover:bg-[#1F331C] disabled:opacity-50 flex items-center gap-2"
-            >
-              {syncing ? (
-                <svg className="animate-spin h-4 w-4 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle><path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg>
-              ) : "🔄"}
-              Sync Local Data to Server
-            </button>
             <button onClick={onLogout} className="rounded-lg bg-[#B04132] px-4 py-2 font-bold text-white transition hover:bg-[#8B2E22]">
               Logout
             </button>
           </div>
         </div>
-        {syncStatus && (
-          <div className={`p-4 rounded-xl text-sm font-bold ${syncStatus.includes('✅') ? 'bg-green-50 text-green-700' : 'bg-blue-50 text-blue-700'}`}>
-            {syncStatus}
-          </div>
-        )}
       </div>
+
 
 
       <div className="mb-16 grid grid-cols-1 gap-10 md:grid-cols-2">

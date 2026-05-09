@@ -24,12 +24,6 @@ export function DataProvider({ children }: { children: React.ReactNode }) {
 
   const loadData = async () => {
     try {
-      const savedCats = localStorage.getItem('agri_categories');
-      const savedProds = localStorage.getItem('agri_products');
-
-      if (savedCats) setCategories(JSON.parse(savedCats));
-      if (savedProds) setProducts(JSON.parse(savedProds));
-
       const [catsResponse, prodsResponse] = await Promise.all([
         fetch('/api/categories'),
         fetch('/api/products'),
@@ -37,17 +31,15 @@ export function DataProvider({ children }: { children: React.ReactNode }) {
 
       if (catsResponse?.ok) {
         const catsData = await catsResponse.json();
-        if (Array.isArray(catsData.categories) && catsData.categories.length > 0) {
+        if (Array.isArray(catsData.categories)) {
           setCategories(catsData.categories);
-          localStorage.setItem('agri_categories', JSON.stringify(catsData.categories));
         }
       }
 
       if (prodsResponse?.ok) {
         const prodsData = await prodsResponse.json();
-        if (Array.isArray(prodsData.products) && prodsData.products.length > 0) {
+        if (Array.isArray(prodsData.products)) {
           setProducts(prodsData.products);
-          localStorage.setItem('agri_products', JSON.stringify(prodsData.products));
         }
       }
     } catch (error) {
@@ -61,18 +53,6 @@ export function DataProvider({ children }: { children: React.ReactNode }) {
     loadData();
   }, []);
 
-  useEffect(() => {
-    if (mounted) {
-        localStorage.setItem('agri_categories', JSON.stringify(categories));
-    }
-  }, [categories, mounted]);
-
-  useEffect(() => {
-    if (mounted) {
-        localStorage.setItem('agri_products', JSON.stringify(products));
-    }
-  }, [products, mounted]);
-
   const addCategory = async (c: Category) => {
     setCategories(prev => [...prev, c]);
     try {
@@ -82,7 +62,7 @@ export function DataProvider({ children }: { children: React.ReactNode }) {
         body: JSON.stringify(c),
       });
     } catch (err) {
-      console.error("Failed to sync category to server", err);
+      console.error("Failed to save category to MongoDB", err);
     }
   };
 
@@ -95,7 +75,7 @@ export function DataProvider({ children }: { children: React.ReactNode }) {
         body: JSON.stringify(p),
       });
     } catch (err) {
-      console.error("Failed to sync product to server", err);
+      console.error("Failed to save product to MongoDB", err);
     }
   };
 
@@ -108,7 +88,7 @@ export function DataProvider({ children }: { children: React.ReactNode }) {
         body: JSON.stringify({ id }),
       });
     } catch (err) {
-      console.error("Failed to remove category from server", err);
+      console.error("Failed to remove category from MongoDB", err);
     }
   };
 
@@ -121,35 +101,12 @@ export function DataProvider({ children }: { children: React.ReactNode }) {
         body: JSON.stringify({ id }),
       });
     } catch (err) {
-      console.error("Failed to remove product from server", err);
+      console.error("Failed to remove product from MongoDB", err);
     }
   };
 
   const updateCategory = (id: string, updates: Partial<Category>) => setCategories(prev => prev.map(c => c.id === id ? { ...c, ...updates } : c));
   const updateProduct = (id: string, updates: Partial<Product>) => setProducts(prev => prev.map(p => p.id === id ? { ...p, ...updates } : p));
-
-  const syncLocalStorageToServer = async () => {
-    const localCats = JSON.parse(localStorage.getItem('agri_categories') || '[]');
-    const localProds = JSON.parse(localStorage.getItem('agri_products') || '[]');
-
-    for (const c of localCats) {
-      await fetch('/api/categories', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(c),
-      });
-    }
-
-    for (const p of localProds) {
-      await fetch('/api/products', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(p),
-      });
-    }
-    
-    await loadData();
-  };
 
   return (
     <DataContext.Provider value={{ 
@@ -160,14 +117,12 @@ export function DataProvider({ children }: { children: React.ReactNode }) {
       removeCategory, 
       removeProduct, 
       updateCategory, 
-      updateProduct,
-      syncLocalStorageToServer 
+      updateProduct
     }}>
       {children}
     </DataContext.Provider>
   );
 }
-
 
 export function useData() {
   const ctx = useContext(DataContext);
