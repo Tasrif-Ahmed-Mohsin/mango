@@ -53,11 +53,14 @@ export async function DELETE(request: Request) {
   try {
     const { id } = await request.json();
     await connectDB();
-    await Product.deleteOne({ id });
+    const result = await Product.deleteOne({ id });
+    if (!result.deletedCount) {
+      return Response.json({ error: "Product not found" }, { status: 404 });
+    }
     return Response.json({ success: true, message: "Product deleted" });
-  } catch (error) {
+  } catch (error: any) {
     console.error("Product delete error:", error);
-    return Response.json({ error: "Failed to delete product" }, { status: 500 });
+    return Response.json({ error: error?.message || "Failed to delete product" }, { status: 500 });
   }
 }
 

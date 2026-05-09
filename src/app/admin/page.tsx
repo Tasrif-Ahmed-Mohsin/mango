@@ -76,6 +76,7 @@ function AdminContent({ onLogout }: { onLogout: () => void }) {
   const prodFileRef = useRef<HTMLInputElement>(null);
 
   const [deleteConfirm, setDeleteConfirm] = useState<DeleteConfirm>(null);
+  const [isDeleting, setIsDeleting] = useState(false);
 
   const uploadImage = async (file: File): Promise<string | null> => {
     const formData = new FormData();
@@ -166,6 +167,7 @@ function AdminContent({ onLogout }: { onLogout: () => void }) {
 
   const executeDelete = async () => {
     if (!deleteConfirm) return;
+    setIsDeleting(true);
     try {
       if (deleteConfirm.type === "cat") await removeCategory(deleteConfirm.id);
       else await removeProduct(deleteConfirm.id);
@@ -174,6 +176,8 @@ function AdminContent({ onLogout }: { onLogout: () => void }) {
     } catch (err: any) {
       console.error('Delete failed:', err);
       alert('Failed to delete: ' + (err?.message || 'Unknown error'));
+    } finally {
+      setIsDeleting(false);
     }
   };
 
@@ -191,11 +195,11 @@ function AdminContent({ onLogout }: { onLogout: () => void }) {
             <p className="mb-2 text-[#81917C]">Are you sure you want to permanently delete</p>
             <p className="mb-6 text-lg font-bold text-[#B04132]">"{deleteConfirm.name}"</p>
             <div className="flex justify-center gap-3">
-              <button onClick={() => setDeleteConfirm(null)} className="rounded-full border border-[#D4CFC3] px-6 py-3 font-bold text-[#2A4026] transition hover:bg-gray-50">
+              <button onClick={() => setDeleteConfirm(null)} disabled={isDeleting} className="rounded-full border border-[#D4CFC3] px-6 py-3 font-bold text-[#2A4026] transition hover:bg-gray-50 disabled:opacity-50">
                 Cancel
               </button>
-              <button onClick={executeDelete} className="rounded-full bg-[#B04132] px-6 py-3 font-bold text-white transition hover:bg-[#8B2E22]">
-                Delete Forever
+              <button onClick={executeDelete} disabled={isDeleting} className="rounded-full bg-[#B04132] px-6 py-3 font-bold text-white transition hover:bg-[#8B2E22] disabled:opacity-50">
+                {isDeleting ? "Deleting..." : "Delete Forever"}
               </button>
             </div>
           </div>

@@ -44,11 +44,14 @@ export async function DELETE(request: Request) {
   try {
     const { id } = await request.json();
     await connectDB();
-    await Category.deleteOne({ id });
+    const result = await Category.deleteOne({ id });
+    if (!result.deletedCount) {
+      return Response.json({ error: "Category not found" }, { status: 404 });
+    }
     return Response.json({ success: true, message: "Category deleted" });
-  } catch (error) {
+  } catch (error: any) {
     console.error("Category delete error:", error);
-    return Response.json({ error: "Failed to delete category" }, { status: 500 });
+    return Response.json({ error: error?.message || "Failed to delete category" }, { status: 500 });
   }
 }
 
