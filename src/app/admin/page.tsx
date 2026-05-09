@@ -57,7 +57,7 @@ export default function AdminPage() {
 }
 
 function AdminContent({ onLogout }: { onLogout: () => void }) {
-  const { categories, products, addCategory, addProduct, removeCategory, removeProduct } = useData();
+  const { categories, products, addCategory, addProduct, removeCategory, removeProduct, refreshData } = useData();
 
   const [catName, setCatName] = useState("");
   const [catImage, setCatImage] = useState<File | null>(null);
@@ -93,24 +93,31 @@ function AdminContent({ onLogout }: { onLogout: () => void }) {
     e.preventDefault();
     setCatUploading(true);
 
-    let imageUrl: string | undefined;
-    if (catImage) {
-      const url = await uploadImage(catImage);
-      if (url) imageUrl = url;
+    try {
+      let imageUrl: string | undefined;
+      if (catImage) {
+        const url = await uploadImage(catImage);
+        if (url) imageUrl = url;
+      }
+
+      await addCategory({
+        id: `${catName.toLowerCase().replace(/\s+/g, "-")}_${Date.now()}`,
+        name: catName,
+        icon: "📦",
+        image: imageUrl,
+        bgColor: "bg-[#FDF2B3]",
+      });
+
+      setCatName("");
+      setCatImage(null);
+      if (catFileRef.current) catFileRef.current.value = "";
+      await refreshData();
+    } catch (err: any) {
+      console.error('Add category failed:', err);
+      alert('Failed to create category: ' + (err?.message || 'Unknown error'));
+    } finally {
+      setCatUploading(false);
     }
-
-    await addCategory({
-      id: `${catName.toLowerCase().replace(/\s+/g, "-")}_${Date.now()}`,
-      name: catName,
-      icon: "📦",
-      image: imageUrl,
-      bgColor: "bg-[#FDF2B3]",
-    });
-
-    setCatName("");
-    setCatImage(null);
-    if (catFileRef.current) catFileRef.current.value = "";
-    setCatUploading(false);
   };
 
   const handleAddProduct = async (e: React.FormEvent) => {
@@ -157,11 +164,17 @@ function AdminContent({ onLogout }: { onLogout: () => void }) {
     setDeleteConfirm({ type, id, name });
   };
 
-  const executeDelete = () => {
+  const executeDelete = async () => {
     if (!deleteConfirm) return;
-    if (deleteConfirm.type === "cat") removeCategory(deleteConfirm.id);
-    else removeProduct(deleteConfirm.id);
-    setDeleteConfirm(null);
+    try {
+      if (deleteConfirm.type === "cat") await removeCategory(deleteConfirm.id);
+      else await removeProduct(deleteConfirm.id);
+      setDeleteConfirm(null);
+      await refreshData();
+    } catch (err: any) {
+      console.error('Delete failed:', err);
+      alert('Failed to delete: ' + (err?.message || 'Unknown error'));
+    }
   };
 
   const inputClass = "w-full border border-[#D4CFC3] bg-[#FDFCF8] text-[#2A4026] p-3 rounded-xl focus:outline-none focus:border-[#B04132] transition font-sans";

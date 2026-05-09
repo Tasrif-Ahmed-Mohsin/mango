@@ -7,12 +7,13 @@ export type Product = { id: string, categoryId: string, name: string, price: num
 type DataContextType = {
   categories: Category[];
   products: Product[];
-  addCategory: (c: Category) => void;
-  addProduct: (p: Product) => void;
-  removeCategory: (id: string) => void;
-  removeProduct: (id: string) => void;
+  addCategory: (c: Category) => Promise<void>;
+  addProduct: (p: Product) => Promise<void>;
+  removeCategory: (id: string) => Promise<void>;
+  removeProduct: (id: string) => Promise<void>;
   updateCategory: (id: string, updates: Partial<Category>) => void;
   updateProduct: (id: string, updates: Partial<Product>) => void;
+  refreshData: () => Promise<void>;
 };
 
 const DataContext = createContext<DataContextType | undefined>(undefined);
@@ -93,13 +94,20 @@ export function DataProvider({ children }: { children: React.ReactNode }) {
   const addCategory = async (c: Category) => {
     setCategories(prev => [...prev, c]);
     try {
-      await fetch('/api/categories', {
+      const res = await fetch('/api/categories', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(c),
       });
+      if (!res.ok) {
+        const data = await res.json().catch(() => ({}));
+        throw new Error(data?.error || 'Failed to save category');
+      }
+      // Clear cache to force fresh fetch on next load
+      localStorage.removeItem('categories');
     } catch (err) {
       console.error("Failed to save category to MongoDB", err);
+      throw err;
     }
   };
 
@@ -116,6 +124,8 @@ export function DataProvider({ children }: { children: React.ReactNode }) {
         console.error("Failed to save product to MongoDB", data);
         throw new Error(data?.error || 'Failed to save product');
       }
+      // Clear cache to force fresh fetch on next load
+      localStorage.removeItem('products');
       return res;
     } catch (err) {
       console.error("Failed to save product to MongoDB", err);
@@ -126,31 +136,76 @@ export function DataProvider({ children }: { children: React.ReactNode }) {
   const removeCategory = async (id: string) => {
     setCategories(prev => prev.filter(c => c.id !== id));
     try {
-      await fetch('/api/categories', {
+      const res = await fetch('/api/categories', {
         method: 'DELETE',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ id }),
       });
+      if (!res.ok) {
+        const data = await res.json().catch(() => ({}));
+        throw new Error(data?.error || 'Failed to remove category');
+      }
+      // Clear cache to force fresh fetch on next load
+      localStorage.removeItem('categories');
     } catch (err) {
       console.error("Failed to remove category from MongoDB", err);
+      throw err;
     }
   };
 
   const removeProduct = async (id: string) => {
     setProducts(prev => prev.filter(p => p.id !== id));
     try {
-      await fetch('/api/products', {
+      const res = await fetch('/api/products', {
         method: 'DELETE',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ id }),
       });
+      if (!res.ok) {
+        const data = await res.json().catch(() => ({}));
+        throw new Error(data?.error || 'Failed to remove product');
+      }
+      // Clear cache to force fresh fetch on next load
+      localStorage.removeItem('products');
     } catch (err) {
       console.error("Failed to remove product from MongoDB", err);
+      throw err;
     }
   };
 
   const updateCategory = (id: string, updates: Partial<Category>) => setCategories(prev => prev.map(c => c.id === id ? { ...c, ...updates } : c));
   const updateProduct = (id: string, updates: Partial<Product>) => setProducts(prev => prev.map(p => p.id === id ? { ...p, ...updates } : p));
+
+  const refreshData = async () => {
+    try {
+      // Clear cache and force fresh fetch from server
+      localStorage.removeItem('categories');
+      localStorage.removeItem('products');
+
+      const [catsResponse, prodsResponse] = await Promise.all([
+        fetch('/api/categories'),
+        fetch('/api/products?limit=200'),
+      ]);
+
+      if (catsResponse?.ok) {
+        const catsData = await catsResponse.json();
+        if (Array.isArray(catsData.categories)) {
+          setCategories(catsData.categories);
+          setCachedData('categories', catsData.categories);
+        }
+      }
+
+      if (prodsResponse?.ok) {
+        const prodsData = await prodsResponse.json();
+        if (Array.isArray(prodsData.products)) {
+          setProducts(prodsData.products);
+          setCachedData('products', prodsData.products);
+        }
+      }
+    } catch (error) {
+      console.error('Failed to refresh data:', error);
+    }
+  };
 
   return (
     <DataContext.Provider value={{ 
@@ -161,7 +216,8 @@ export function DataProvider({ children }: { children: React.ReactNode }) {
       removeCategory, 
       removeProduct, 
       updateCategory, 
-      updateProduct
+      updateProduct,
+      refreshData
     }}>
       {children}
     </DataContext.Provider>
