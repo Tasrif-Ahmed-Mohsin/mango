@@ -8,7 +8,7 @@ export async function GET() {
 
     const headers = new Headers({
       'Content-Type': 'application/json',
-      'Cache-Control': 'public, max-age=600, s-maxage=7200',
+      'Cache-Control': 'public, max-age=30, s-maxage=60',
     });
 
     return new Response(JSON.stringify({ success: true, categories }), { headers });

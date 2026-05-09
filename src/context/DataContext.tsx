@@ -181,9 +181,12 @@ export function DataProvider({ children }: { children: React.ReactNode }) {
       localStorage.removeItem('categories');
       localStorage.removeItem('products');
 
+      // Add cache-busting query param and no-cache header to force server to not use CDN cache
+      const now = Date.now();
+      const fetchOpts = { headers: { 'Cache-Control': 'no-cache' } };
       const [catsResponse, prodsResponse] = await Promise.all([
-        fetch('/api/categories'),
-        fetch('/api/products?limit=200'),
+        fetch(`/api/categories?_t=${now}`, fetchOpts),
+        fetch(`/api/products?limit=200&_t=${now}`, fetchOpts),
       ]);
 
       if (catsResponse?.ok) {

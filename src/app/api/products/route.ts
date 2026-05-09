@@ -16,7 +16,7 @@ export async function GET(request: Request) {
 
     const headers = new Headers({
       'Content-Type': 'application/json',
-      'Cache-Control': 'public, max-age=300, s-maxage=3600',
+      'Cache-Control': 'public, max-age=30, s-maxage=60',
     });
 
     return new Response(JSON.stringify({ success: true, products, pagination: { total, page, limit, pages: Math.ceil(total / limit) } }), { headers });
