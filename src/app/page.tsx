@@ -341,10 +341,15 @@ export default function Home() {
       {/* Popular Categories Section */}
       <section className="w-full bg-white relative z-10 py-12 mb-0">
         <div className="container mx-auto px-6 max-w-7xl">
-          <div className="flex flex-col sm:flex-row justify-between items-end mb-8 border-b border-gray-100 pb-4">
-            <h2 className="text-5xl md:text-6xl font-bold text-[#0A4027] drop-shadow-sm tracking-wide reveal anim-fade-up delay-0" style={{ fontFamily: "'Bebas Neue', sans-serif" }}>
-              <span className="text-[#0A4027]">Our</span>{" "}<span className="text-[#F0A500]">Categories</span>
-            </h2>
+          <div className="flex flex-col sm:flex-row justify-between items-center sm:items-end gap-3 sm:gap-0 mb-8 border-b border-gray-100 pb-4 text-center sm:text-left">
+            <div className="flex flex-col items-center sm:items-start">
+              <h2 className="text-5xl md:text-6xl font-bold text-[#0A4027] drop-shadow-sm tracking-wide reveal anim-fade-up delay-0" style={{ fontFamily: "'Bebas Neue', sans-serif" }}>
+                <span className="text-[#0A4027]">Our</span>{" "}<span className="text-[#F0A500]">Categories</span>
+              </h2>
+              <svg className="w-48 md:w-64 h-6 mb-4 reveal anim-fade-in delay-100 visible" viewBox="0 0 200 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M4 16C20 4 40 -2 60 12C80 26 100 18 120 6C140 -6 160 4 180 16C190 22 196 14 196 14" stroke="#F0A500" strokeWidth="2.5" strokeLinecap="round" fill="none" />
+              </svg>
+            </div>
             <span className="text-[#8B9B91] font-semibold text-sm hidden sm:block mb-2 reveal anim-fade-in delay-200">Explore our freshly picked nature drops</span>
           </div>
 
@@ -400,10 +405,15 @@ export default function Home() {
       {/* Top Product Section */}
       <section id="shop" className="bg-[#E3E8CD] py-16 pb-12 -mt-1">
         <div className="container mx-auto px-6">
-          <div className="flex flex-col sm:flex-row justify-between items-end mb-10 border-b border-[#C4CCAF] pb-4">
-            <h2 className="text-5xl md:text-6xl font-bold text-[#11311F] drop-shadow-sm tracking-wide reveal anim-fade-up delay-0" style={{ fontFamily: "'Bebas Neue', sans-serif" }}>
-              <span className="text-[#11311F]">Fresh</span>{" "}<span className="text-[#F0A500]">Picks</span>
-            </h2>
+          <div className="flex flex-col sm:flex-row justify-between items-center sm:items-end gap-3 sm:gap-0 mb-10 border-b border-[#C4CCAF] pb-4 text-center sm:text-left">
+            <div className="flex flex-col items-center sm:items-start">
+              <h2 className="text-5xl md:text-6xl font-bold text-[#11311F] drop-shadow-sm tracking-wide reveal anim-fade-up delay-0" style={{ fontFamily: "'Bebas Neue', sans-serif" }}>
+                <span className="text-[#11311F]">Fresh</span>{" "}<span className="text-[#F0A500]">Picks</span>
+              </h2>
+              <svg className="w-48 md:w-64 h-6 mb-4 reveal anim-fade-in delay-100 visible" viewBox="0 0 200 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M4 16C20 4 40 -2 60 12C80 26 100 18 120 6C140 -6 160 4 180 16C190 22 196 14 196 14" stroke="#F0A500" strokeWidth="2.5" strokeLinecap="round" fill="none" />
+              </svg>
+            </div>
             <button
               onClick={() => setActiveCategory("all")}
               className="text-sm font-semibold text-[#4A6840] hover:text-[#11311F] transition flex items-center gap-2 group"
