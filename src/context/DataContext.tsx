@@ -17,6 +17,33 @@ type DataContextType = {
 
 const DataContext = createContext<DataContextType | undefined>(undefined);
 
+// Simple SWR-like cache with TTL
+const CACHE_TTL = 5 * 60 * 1000; // 5 minutes
+const getCachedData = (key: string) => {
+  if (typeof window === 'undefined') return null;
+  try {
+    const cached = localStorage.getItem(key);
+    if (!cached) return null;
+    const { data, timestamp } = JSON.parse(cached);
+    if (Date.now() - timestamp > CACHE_TTL) {
+      localStorage.removeItem(key);
+      return null;
+    }
+    return data;
+  } catch {
+    return null;
+  }
+};
+
+const setCachedData = (key: string, data: any) => {
+  if (typeof window === 'undefined') return;
+  try {
+    localStorage.setItem(key, JSON.stringify({ data, timestamp: Date.now() }));
+  } catch {
+    // Silently fail if storage is full
+  }
+};
+
 export function DataProvider({ children }: { children: React.ReactNode }) {
   const [categories, setCategories] = useState<Category[]>([]);
   const [products, setProducts] = useState<Product[]>([]);
@@ -24,15 +51,24 @@ export function DataProvider({ children }: { children: React.ReactNode }) {
 
   const loadData = async () => {
     try {
+      // Try to load from cache first
+      const cachedCats = getCachedData('categories');
+      const cachedProds = getCachedData('products');
+
+      if (cachedCats) setCategories(cachedCats);
+      if (cachedProds) setProducts(cachedProds);
+
+      // Fetch fresh data in background
       const [catsResponse, prodsResponse] = await Promise.all([
         fetch('/api/categories'),
-        fetch('/api/products'),
+        fetch('/api/products?limit=200'),
       ]);
 
       if (catsResponse?.ok) {
         const catsData = await catsResponse.json();
         if (Array.isArray(catsData.categories)) {
           setCategories(catsData.categories);
+          setCachedData('categories', catsData.categories);
         }
       }
 
@@ -40,6 +76,7 @@ export function DataProvider({ children }: { children: React.ReactNode }) {
         const prodsData = await prodsResponse.json();
         if (Array.isArray(prodsData.products)) {
           setProducts(prodsData.products);
+          setCachedData('products', prodsData.products);
         }
       }
     } catch (error) {

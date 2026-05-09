@@ -1,11 +1,25 @@
 import { connectDB } from "@/lib/mongodb";
 import { Product } from "@/lib/models";
 
-export async function GET() {
+export async function GET(request: Request) {
   try {
     await connectDB();
-    const products = await Product.find().sort({ createdAt: -1 });
-    return Response.json({ success: true, products });
+    const url = new URL(request.url);
+    const page = parseInt(url.searchParams.get('page') || '1');
+    const limit = parseInt(url.searchParams.get('limit') || '100');
+    const skip = (page - 1) * limit;
+
+    const [products, total] = await Promise.all([
+      Product.find().select('-__v').sort({ createdAt: -1 }).skip(skip).limit(limit),
+      Product.countDocuments(),
+    ]);
+
+    const headers = new Headers({
+      'Content-Type': 'application/json',
+      'Cache-Control': 'public, max-age=300, s-maxage=3600',
+    });
+
+    return new Response(JSON.stringify({ success: true, products, pagination: { total, page, limit, pages: Math.ceil(total / limit) } }), { headers });
   } catch (error) {
     console.error("Products fetch error:", error);
     return Response.json({ error: "Failed to fetch products" }, { status: 500 });

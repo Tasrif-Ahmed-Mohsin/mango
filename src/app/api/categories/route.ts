@@ -4,8 +4,14 @@ import { Category } from "@/lib/models";
 export async function GET() {
   try {
     await connectDB();
-    const categories = await Category.find().sort({ createdAt: -1 });
-    return Response.json({ success: true, categories });
+    const categories = await Category.find().select('-__v').sort({ createdAt: -1 });
+
+    const headers = new Headers({
+      'Content-Type': 'application/json',
+      'Cache-Control': 'public, max-age=600, s-maxage=7200',
+    });
+
+    return new Response(JSON.stringify({ success: true, categories }), { headers });
   } catch (error) {
     console.error("Categories fetch error:", error);
     return Response.json({ error: "Failed to fetch categories" }, { status: 500 });

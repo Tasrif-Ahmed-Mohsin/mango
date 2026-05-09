@@ -130,7 +130,7 @@ export default function Home() {
 
         {/* Top-Right: Scandinavian leaf cluster */}
         <div className="absolute top-[3%] right-[-1%] w-[460px] h-[460px] opacity-[0.07] mix-blend-multiply -rotate-6">
-          <img src="/scandi-stylized-green-leaves-nature-themed-decoration.svg" alt="" className="w-full h-full object-contain" />
+          <img src="/scandi-stylized-green-leaves-nature-themed-decoration.svg" alt="" loading="lazy" decoding="async" className="w-full h-full object-contain" />
         </div>
 
         {/* Top-Left: Whole mango */}
@@ -198,13 +198,13 @@ export default function Home() {
           className="absolute -bottom-12 -left-12 md:-left-4 md:-bottom-4 w-5/12 sm:w-1/4 md:w-1/5 h-auto opacity-100 z-0 hero-mango-l transition-transform duration-300 ease-out"
           style={{ transform: `translate3d(${mousePos.x}px, ${mousePos.y}px, 0)` }}
         >
-          <img src="/1.webp" alt="Real Mango 1" className="w-full h-full object-contain filter drop-shadow-2xl transform rotate-12" />
+          <img src="/1.webp" alt="Real Mango 1" loading="lazy" decoding="async" className="w-full h-full object-contain filter drop-shadow-2xl transform rotate-12" />
         </div>
         <div 
           className="absolute -bottom-12 -right-12 md:-right-4 md:-bottom-4 w-1/2 sm:w-1/3 md:w-1/4 h-auto opacity-100 z-0 hero-mango-r transition-transform duration-300 ease-out"
           style={{ transform: `translate3d(${-mousePos.x}px, ${-mousePos.y}px, 0)` }}
         >
-          <img src="/2.webp" alt="Real Mango 2" className="w-full h-full object-contain filter drop-shadow-2xl transform -rotate-12" />
+          <img src="/2.webp" alt="Real Mango 2" loading="lazy" decoding="async" className="w-full h-full object-contain filter drop-shadow-2xl transform -rotate-12" />
         </div>
 
         {/* Frosted Glass Overlay fading from bottom to top */}
