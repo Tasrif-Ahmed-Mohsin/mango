@@ -27,7 +27,10 @@ const bebas = Bebas_Neue({
 export const metadata: Metadata = {
   title: "AgriCommerce - Organic Premium",
   description: "Fresh agricultural products directly from farmers to you.",
-  themeColor: "#FAD65F",
+  themeColor: [
+    { media: '(prefers-color-scheme: light)', color: '#FAD65F' },
+    { media: '(prefers-color-scheme: dark)', color: '#FAD65F' },
+  ],
 };
 
 export default function RootLayout({
