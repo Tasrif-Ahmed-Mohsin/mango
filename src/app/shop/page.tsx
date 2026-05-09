@@ -125,7 +125,7 @@ export default function ShopPage() {
 
             {/* Products Grid */}
             {filteredProducts.length > 0 ? (
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+              <div className="grid grid-cols-2 md:grid-cols-2 lg:grid-cols-3 gap-3 md:gap-6">
                 {filteredProducts.map((product) => (
                   <Link
                     key={product.id}
@@ -133,7 +133,7 @@ export default function ShopPage() {
                     className="bg-white rounded-xl overflow-hidden shadow-md hover:shadow-xl transition-all duration-300 hover:scale-105 flex flex-col h-full"
                   >
                     {/* Product Image */}
-                    <div className="relative h-48 bg-gradient-to-br from-[#FCD860] to-[#F0A500] overflow-hidden flex items-center justify-center">
+                    <div className="relative h-32 sm:h-48 bg-gradient-to-br from-[#FCD860] to-[#F0A500] overflow-hidden flex items-center justify-center">
                       {product.image ? (
                         <img
                           src={product.image}
@@ -146,21 +146,21 @@ export default function ShopPage() {
                     </div>
 
                     {/* Product Info */}
-                    <div className="p-5 flex flex-col flex-grow">
-                      <h3 className="font-bold text-[#0A4027] mb-2 line-clamp-2">
+                    <div className="p-3 sm:p-5 flex flex-col flex-grow">
+                      <h3 className="font-bold text-sm sm:text-base text-[#0A4027] mb-2 line-clamp-2">
                         {product.name}
                       </h3>
-                      <p className="text-sm text-gray-600 mb-4 line-clamp-2 flex-grow">
+                      <p className="text-[11px] sm:text-sm text-gray-600 mb-3 sm:mb-4 line-clamp-2 flex-grow">
                         {product.description || "Fresh agricultural product"}
                       </p>
 
                       {/* Price & Stock */}
                       <div className="flex justify-between items-center">
-                        <span className="text-2xl font-bold text-[#F0A500]">
+                        <span className="text-base sm:text-2xl font-bold text-[#F0A500]">
                           ₹{product.price}
                         </span>
                         <span
-                          className={`text-sm font-semibold px-3 py-1 rounded-full ${
+                          className={`text-[10px] sm:text-sm font-semibold px-2 sm:px-3 py-1 rounded-full ${
                             product.stock! > 0
                               ? "bg-green-100 text-green-700"
                               : "bg-red-100 text-red-700"

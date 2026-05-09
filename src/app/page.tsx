@@ -412,12 +412,12 @@ export default function Home() {
             </button>
           </div>
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
+          <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-5">
             {filteredProducts.map((p: any, pi: number) => (
-              <div key={p.id} style={{ animationDelay: `${pi * 80}ms` }} className="group relative rounded-[2.5rem] overflow-hidden transition-all duration-500 bg-white hover:bg-gradient-to-b hover:from-[#F0A500] hover:to-[#D26900] shadow-2xl hover:shadow-[0_8px_30px_rgba(210,105,0,0.3)] flex flex-col border-[6px] border-[#E3E8CD] hover:border-[#F0A500] reveal anim-fade-up">
+              <div key={p.id} style={{ animationDelay: `${pi * 80}ms` }} className="group relative rounded-[1.75rem] sm:rounded-[2.5rem] overflow-hidden transition-all duration-500 bg-white hover:bg-gradient-to-b hover:from-[#F0A500] hover:to-[#D26900] shadow-2xl hover:shadow-[0_8px_30px_rgba(210,105,0,0.3)] flex flex-col border-[4px] sm:border-[6px] border-[#E3E8CD] hover:border-[#F0A500] reveal anim-fade-up">
                 <Link href={`/product/${p.id}`} className="block flex-grow flex flex-col">
                   {/* Image Area */}
-                  <div className="relative overflow-hidden mb-4 aspect-[4/3] bg-gray-50 group-hover:bg-white/10 transition-colors duration-300 flex items-center justify-center">
+                  <div className="relative overflow-hidden mb-2 sm:mb-4 aspect-[4/3] bg-gray-50 group-hover:bg-white/10 transition-colors duration-300 flex items-center justify-center">
                     <div className="absolute top-4 left-4 bg-black/30 backdrop-blur-md text-white text-[10px] font-semibold px-3 py-1.5 rounded-full z-10">
                       {p.tag || "20% off"}
                     </div>
@@ -434,19 +434,19 @@ export default function Home() {
                   </div>
 
                   {/* Info */}
-                  <div className="px-5 pb-5 flex flex-col flex-grow">
+                  <div className="px-3 sm:px-5 pb-4 sm:pb-5 flex flex-col flex-grow">
                     <div className="flex justify-between items-start mb-2 gap-2">
-                      <h3 className="font-bold text-xl text-gray-900 group-hover:text-white transition-colors duration-300 leading-tight line-clamp-1 tracking-tight">{p.name}</h3>
-                      <div className="bg-gray-900 group-hover:bg-black/30 text-white text-xs font-bold px-3 py-1.5 rounded-full transition-colors duration-300 shrink-0">
+                      <h3 className="font-bold text-sm sm:text-xl text-gray-900 group-hover:text-white transition-colors duration-300 leading-tight line-clamp-1 tracking-tight">{p.name}</h3>
+                      <div className="bg-gray-900 group-hover:bg-black/30 text-white text-[10px] sm:text-xs font-bold px-2.5 sm:px-3 py-1 sm:py-1.5 rounded-full transition-colors duration-300 shrink-0">
                         ${p.price.toFixed(2)}
                       </div>
                     </div>
 
-                    <p className="text-[11px] text-gray-500 group-hover:text-white/90 transition-colors duration-300 line-clamp-2 mb-4 leading-relaxed font-medium">
+                    <p className="text-[10px] sm:text-[11px] text-gray-500 group-hover:text-white/90 transition-colors duration-300 line-clamp-2 mb-3 sm:mb-4 leading-relaxed font-medium">
                       {p.description || `Loved worldwide for their freshness, our ${p.name} are a delicious delight wherever you are.`}
                     </p>
 
-                    <div className="flex gap-2 mb-5 mt-auto">
+                    <div className="hidden sm:flex gap-2 mb-5 mt-auto">
                       <span className="bg-gray-100 group-hover:bg-white/20 text-gray-700 group-hover:text-white text-[10px] font-bold px-3 py-1.5 rounded-full transition-colors duration-300">
                         Best Seller
                       </span>
@@ -457,7 +457,7 @@ export default function Home() {
 
                     <button
                       onClick={(e) => { e.preventDefault(); addToCart(p.id, 1); }}
-                      className="w-full py-3.5 rounded-full bg-[#FCD860] group-hover:bg-white text-[#0A4027] group-hover:text-[#A85800] font-bold text-[13px] transition-all duration-300 shadow-sm group-hover:shadow-md"
+                      className="w-full py-2.5 sm:py-3.5 rounded-full bg-[#FCD860] group-hover:bg-white text-[#0A4027] group-hover:text-[#A85800] font-bold text-[11px] sm:text-[13px] transition-all duration-300 shadow-sm group-hover:shadow-md"
                     >
                       Add to cart
                     </button>
