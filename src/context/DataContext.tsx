@@ -106,13 +106,20 @@ export function DataProvider({ children }: { children: React.ReactNode }) {
   const addProduct = async (p: Product) => {
     setProducts(prev => [...prev, p]);
     try {
-      await fetch('/api/products', {
+      const res = await fetch('/api/products', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(p),
       });
+      if (!res.ok) {
+        const data = await res.json().catch(() => ({}));
+        console.error("Failed to save product to MongoDB", data);
+        throw new Error(data?.error || 'Failed to save product');
+      }
+      return res;
     } catch (err) {
       console.error("Failed to save product to MongoDB", err);
+      throw err;
     }
   };
 

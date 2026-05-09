@@ -123,27 +123,34 @@ function AdminContent({ onLogout }: { onLogout: () => void }) {
       if (url) imageUrl = url;
     }
 
-    await addProduct({
-      id: `p_${Date.now()}`,
-      categoryId: prodCat || (categories[0] ? categories[0].id : ""),
-      name: prodName,
-      price: parseFloat(prodPrice),
-      description: prodDesc,
-      stock: parseInt(prodStock),
-      unit: prodUnit,
-      farmer: prodFarmer,
-      image: imageUrl,
-      emoji: "📦",
-    });
+    try {
+      await addProduct({
+        id: `p_${Date.now()}`,
+        categoryId: prodCat || (categories[0] ? categories[0].id : ""),
+        name: prodName,
+        price: parseFloat(prodPrice),
+        description: prodDesc,
+        stock: parseInt(prodStock),
+        unit: prodUnit,
+        farmer: prodFarmer,
+        image: imageUrl,
+        emoji: "📦",
+      });
 
-    setProdName("");
-    setProdPrice("");
-    setProdDesc("");
-    setProdStock("");
-    setProdFarmer("");
-    setProdImage(null);
-    if (prodFileRef.current) prodFileRef.current.value = "";
-    setProdUploading(false);
+      setProdName("");
+      setProdPrice("");
+      setProdDesc("");
+      setProdStock("");
+      setProdFarmer("");
+      setProdImage(null);
+      if (prodFileRef.current) prodFileRef.current.value = "";
+    } catch (err: any) {
+      console.error('Add product failed:', err);
+      alert('Failed to create product: ' + (err?.message || 'Unknown error'));
+      // Optionally revert optimistic update by reloading products from server
+    } finally {
+      setProdUploading(false);
+    }
   };
 
   const confirmDelete = (type: "cat" | "prod", id: string, name: string) => {
