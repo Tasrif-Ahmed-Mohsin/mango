@@ -12,8 +12,7 @@ export default function CategoryPage() {
   const [mounted, setMounted] = useState(false);
 
   useEffect(() => { setMounted(true); }, []);
-
-  if (!mounted) return null;
+  // show server-rendered content immediately; use `mounted` to trigger client-only effects
   
   const category = categories.find((c: any) => c.id === id);
   const categoryProducts = products.filter((p: any) => p.categoryId === id);

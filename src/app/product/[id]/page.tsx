@@ -14,8 +14,7 @@ export default function ProductPage() {
   const [mounted, setMounted] = useState(false);
 
   useEffect(() => { setMounted(true); }, []);
-
-  if (!mounted) return null;
+  // show server-rendered content immediately; use `mounted` for client-only effects
   if (!product) return <div className="p-16 text-center text-2xl font-extrabold text-[#0A4027]">Product not found</div>;
   
   const categoryIcon = categories.find((c: any) => c.id === product.categoryId)?.icon || "📦";

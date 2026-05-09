@@ -17,7 +17,7 @@ export default function CartPage() {
 
   const total = cartItems.reduce((acc, item) => acc + ((item.product?.price || 0) * item.quantity), 0);
 
-  if (!mounted) return null;
+  // render immediately on server; mounted toggles client-only behaviors
 
   if (items.length === 0) {
     return (

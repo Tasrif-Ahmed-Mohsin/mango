@@ -117,7 +117,7 @@ export default function Home() {
     return () => { clearTimeout(timer); observer?.disconnect(); };
   }, [mounted, categories, products, activeCategory]);
 
-  if (!mounted) return null;
+  // render immediately on server; mounted is used only to trigger client-only effects
 
   const filteredProducts = activeCategory === "all"
     ? products
