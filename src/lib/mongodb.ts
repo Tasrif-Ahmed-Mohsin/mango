@@ -2,11 +2,11 @@ import mongoose from "mongoose";
 
 const MONGODB_URI = process.env.MONGODB_URI;
 
-if (!MONGODB_URI) {
-  console.warn("⚠️  MONGODB_URI not set. Using in-memory storage as fallback.");
-}
-
 let cached = (global as any).mongoose || { conn: null, promise: null };
+
+if (!(global as any).mongoose) {
+  (global as any).mongoose = cached;
+}
 
 export async function connectDB() {
   if (cached.conn) {
@@ -14,13 +14,23 @@ export async function connectDB() {
   }
 
   if (!MONGODB_URI) {
-    console.warn("MongoDB connection skipped. Using in-memory storage.");
-    return null;
+    console.error("❌ MONGODB_URI is not defined in environment variables");
+    throw new Error("MONGODB_URI is missing");
   }
 
   if (!cached.promise) {
-    cached.promise = mongoose.connect(MONGODB_URI).then((mongoose) => {
+    const opts = {
+      bufferCommands: false,
+    };
+
+    console.log("📡 Attempting to connect to MongoDB...");
+    cached.promise = mongoose.connect(MONGODB_URI, opts).then((mongoose) => {
+      console.log("✅ MongoDB Connected Successfully");
       return mongoose;
+    }).catch(err => {
+      console.error("❌ MongoDB Connection Error:", err.message);
+      cached.promise = null;
+      throw err;
     });
   }
 
@@ -33,3 +43,4 @@ export async function connectDB() {
 
   return cached.conn;
 }
+
