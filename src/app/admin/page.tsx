@@ -61,6 +61,7 @@ function AdminContent({ onLogout }: { onLogout: () => void }) {
 
   const [catName, setCatName] = useState("");
   const [catImage, setCatImage] = useState<File | null>(null);
+  const [catImageUrl, setCatImageUrl] = useState("");
   const [catUploading, setCatUploading] = useState(false);
   const catFileRef = useRef<HTMLInputElement>(null);
 
@@ -72,6 +73,7 @@ function AdminContent({ onLogout }: { onLogout: () => void }) {
   const [prodUnit, setProdUnit] = useState("kg");
   const [prodFarmer, setProdFarmer] = useState("");
   const [prodImage, setProdImage] = useState<File | null>(null);
+  const [prodImageUrl, setProdImageUrl] = useState("");
   const [prodUploading, setProdUploading] = useState(false);
   const prodFileRef = useRef<HTMLInputElement>(null);
 
@@ -106,8 +108,10 @@ function AdminContent({ onLogout }: { onLogout: () => void }) {
     setCatUploading(true);
 
     try {
-      let imageUrl: string | undefined;
-      if (catImage) {
+      let imageUrl: string | undefined = catImageUrl || undefined;
+      
+      // Only upload file if no URL provided
+      if (!catImageUrl && catImage) {
         const url = await uploadImage(catImage);
         if (url) imageUrl = url;
       }
@@ -122,6 +126,7 @@ function AdminContent({ onLogout }: { onLogout: () => void }) {
 
       setCatName("");
       setCatImage(null);
+      setCatImageUrl("");
       if (catFileRef.current) catFileRef.current.value = "";
       await refreshData();
     } catch (err: any) {
@@ -137,8 +142,10 @@ function AdminContent({ onLogout }: { onLogout: () => void }) {
     setProdUploading(true);
 
     try {
-      let imageUrl: string | undefined;
-      if (prodImage) {
+      let imageUrl: string | undefined = prodImageUrl || undefined;
+      
+      // Only upload file if no URL provided
+      if (!prodImageUrl && prodImage) {
         const url = await uploadImage(prodImage);
         if (url) imageUrl = url;
       }
@@ -162,6 +169,7 @@ function AdminContent({ onLogout }: { onLogout: () => void }) {
       setProdStock("");
       setProdFarmer("");
       setProdImage(null);
+      setProdImageUrl("");
       if (prodFileRef.current) prodFileRef.current.value = "";
       await refreshData();
     } catch (err: any) {
@@ -242,8 +250,16 @@ function AdminContent({ onLogout }: { onLogout: () => void }) {
               <input required value={catName} onChange={(e) => setCatName(e.target.value)} className={inputClass} placeholder="e.g. Jackfruit" />
             </div>
             <div>
-              <label className={labelClass}>Category Image</label>
-              <p className="mb-2 text-xs text-[#81917C]">Upload an image to use as the card background</p>
+              <label className={labelClass}>Category Image (URL or File)</label>
+              <p className="mb-2 text-xs text-[#81917C]">Paste a public image URL or upload a file</p>
+              <input 
+                type="url" 
+                value={catImageUrl} 
+                onChange={(e) => setCatImageUrl(e.target.value)} 
+                className={inputClass} 
+                placeholder="https://example.com/image.jpg" 
+              />
+              <p className="my-2 text-center text-xs text-[#81917C]">OR</p>
               <input ref={catFileRef} type="file" accept="image/*" onChange={(e) => setCatImage(e.target.files?.[0] || null)} className="hidden" id="catImageUpload" />
               <label htmlFor="catImageUpload" className={fileLabelClass}>
                 <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="m21 15-5-5L5 21"/></svg>
@@ -295,7 +311,16 @@ function AdminContent({ onLogout }: { onLogout: () => void }) {
               <textarea required value={prodDesc} onChange={(e) => setProdDesc(e.target.value)} className={inputClass} rows={2} />
             </div>
             <div>
-              <label className={labelClass}>Product Image</label>
+              <label className={labelClass}>Product Image (URL or File)</label>
+              <p className="mb-2 text-xs text-[#81917C]">Paste a public image URL or upload a file</p>
+              <input 
+                type="url" 
+                value={prodImageUrl} 
+                onChange={(e) => setProdImageUrl(e.target.value)} 
+                className={inputClass} 
+                placeholder="https://example.com/image.jpg" 
+              />
+              <p className="my-2 text-center text-xs text-[#81917C]">OR</p>
               <input ref={prodFileRef} type="file" accept="image/*" onChange={(e) => setProdImage(e.target.files?.[0] || null)} className="hidden" id="prodImageUpload" />
               <label htmlFor="prodImageUpload" className={fileLabelClass}>
                 <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="m21 15-5-5L5 21"/></svg>
