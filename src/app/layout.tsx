@@ -41,6 +41,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       <head>
+        <meta name="color-scheme" content="light" />
         <meta name="theme-color" content="#FAD65F" media="(prefers-color-scheme: light)" />
         <meta name="theme-color" content="#FAD65F" media="(prefers-color-scheme: dark)" />
       </head>

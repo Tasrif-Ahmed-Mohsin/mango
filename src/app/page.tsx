@@ -126,55 +126,55 @@ export default function Home() {
   return (
     <div className="pb-16 relative w-full overflow-hidden bg-[#FBF7F0]">
       {/* Global Background Nature SVGs (Watermarks) */}
-      <div className="absolute inset-0 pointer-events-none z-0 overflow-hidden">
+      <div className="absolute inset-0 pointer-events-none z-0 overflow-hidden isolate">
 
         {/* Top-Right: Scandinavian leaf cluster */}
-        <div className="absolute top-[3%] right-[-1%] w-[460px] h-[460px] opacity-[0.07] mix-blend-multiply -rotate-6">
+        <div className="absolute top-[3%] right-[-1%] w-[460px] h-[460px] opacity-[0.06] -rotate-6">
           <img src="/scandi-stylized-green-leaves-nature-themed-decoration.svg" alt="" loading="lazy" decoding="async" className="w-full h-full object-contain" />
         </div>
 
         {/* Top-Left: Whole mango */}
-        <div className="absolute top-[10%] left-[3%] w-[130px] h-[130px] opacity-[0.07] mix-blend-multiply -rotate-[25deg]">
+        <div className="absolute top-[10%] left-[3%] w-[130px] h-[130px] opacity-[0.06] -rotate-[25deg]">
           <img src="/icons8-mango (2).svg" alt="" className="w-full h-full object-contain" />
         </div>
 
         {/* Mid-Left: Wind/air */}
-        <div className="absolute top-[28%] left-[1%] w-[190px] h-[190px] opacity-[0.07] mix-blend-multiply rotate-12">
+        <div className="absolute top-[28%] left-[1%] w-[190px] h-[190px] opacity-[0.06] rotate-12">
           <img src="/icons8-wind.svg" alt="" className="w-full h-full object-contain" />
         </div>
 
         {/* Mid-Right: Windstorm */}
-        <div className="absolute top-[25%] right-[2%] w-[180px] h-[180px] opacity-[0.06] mix-blend-multiply -rotate-[18deg]">
+        <div className="absolute top-[25%] right-[2%] w-[180px] h-[180px] opacity-[0.05] -rotate-[18deg]">
           <img src="/icons8-windstorm.svg" alt="" className="w-full h-full object-contain" />
         </div>
 
         {/* Center-Left: Whole mango */}
-        <div className="absolute top-[42%] left-[5%] w-[170px] h-[170px] opacity-[0.07] mix-blend-multiply rotate-[22deg]">
+        <div className="absolute top-[42%] left-[5%] w-[170px] h-[170px] opacity-[0.06] rotate-[22deg]">
           <img src="/icons8-mango (2).svg" alt="" className="w-full h-full object-contain" />
         </div>
 
         {/* Center-Right: Half mango (brand hero) */}
-        <div className="absolute top-[45%] right-[4%] w-[180px] h-[180px] opacity-[0.07] mix-blend-multiply -rotate-[12deg]">
+        <div className="absolute top-[45%] right-[4%] w-[180px] h-[180px] opacity-[0.06] -rotate-[12deg]">
           <img src="/icons8-mango (1).svg" alt="" className="w-full h-full object-contain" />
         </div>
 
         {/* Mid-Bottom: Windstorm echo */}
-        <div className="absolute top-[58%] right-[3%] w-[200px] h-[200px] opacity-[0.07] mix-blend-multiply rotate-[8deg]">
+        <div className="absolute top-[58%] right-[3%] w-[200px] h-[200px] opacity-[0.05] rotate-[8deg]">
           <img src="/icons8-windstorm.svg" alt="" className="w-full h-full object-contain" />
         </div>
 
         {/* Bottom-Left: Large half mango */}
-        <div className="absolute top-[74%] left-[3%] w-[240px] h-[240px] opacity-[0.08] mix-blend-multiply -rotate-[8deg]">
+        <div className="absolute top-[74%] left-[3%] w-[240px] h-[240px] opacity-[0.06] -rotate-[8deg]">
           <img src="/icons8-mango (1).svg" alt="" className="w-full h-full object-contain" />
         </div>
 
         {/* Bottom-Right: Leaf cluster */}
-        <div className="absolute top-[80%] right-[3%] w-[180px] h-[180px] opacity-[0.07] mix-blend-multiply rotate-[30deg]">
+        <div className="absolute top-[80%] right-[3%] w-[180px] h-[180px] opacity-[0.05] rotate-[30deg]">
           <img src="/icons8-leaf.svg" alt="" className="w-full h-full object-contain" />
         </div>
 
         {/* Bottom-Center: Scandinavian echo */}
-        <div className="absolute top-[90%] right-[-3%] w-[300px] h-[300px] opacity-[0.05] mix-blend-multiply rotate-[12deg]">
+        <div className="absolute top-[90%] right-[-3%] w-[300px] h-[300px] opacity-[0.04] rotate-[12deg]">
           <img src="/scandi-stylized-green-leaves-nature-themed-decoration.svg" alt="" className="w-full h-full object-contain" />
         </div>
 
@@ -182,7 +182,7 @@ export default function Home() {
 
       {/* Hero Section */}
       <section 
-        className="relative overflow-hidden pt-14 pb-24 md:pt-16 md:pb-28 flex flex-col justify-center min-h-[68vh] md:min-h-[85vh] bg-[#FAD65F]"
+        className="relative overflow-hidden pt-14 pb-24 md:pt-16 md:pb-28 flex flex-col justify-center min-h-[68vh] md:min-h-[85vh] bg-[#FAD65F] isolate"
         onMouseMove={(e) => {
           const x = (e.clientX / window.innerWidth - 0.5) * 30;
           const y = (e.clientY / window.innerHeight - 0.5) * 30;
@@ -191,7 +191,7 @@ export default function Home() {
       >
         {/* Subtle Noise Texture & Glowing Background */}
         <div className="absolute inset-0 z-0 bg-[radial-gradient(circle_at_center,rgba(255,255,255,0.4)_0%,transparent_50%)] pointer-events-none"></div>
-        <div className="absolute inset-0 z-0 opacity-10 pointer-events-none mix-blend-overlay bg-[url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIyMDAiIGhlaWdodD0iMjAwIj4KICAgIDxmaWx0ZXIgaWQ9Im5vaXNlIj4KICAgICAgICA8ZmVUdXJidWxlbmNlIHR5cGU9ImZyYWN0YWxOb2lzZSIgYmFzZUZyZXF1ZW5jeT0iMC42NSIgbnVtT2N0YXZlcz0iMyIgc3RpdGNoVGlsZXM9InN0aXRjaCIvPgogICAgPC9maWx0ZXI+CiAgICA8cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWx0ZXI9InVybCgibm9pc2UpIi8+Cjwvc3ZnPg==')]"></div>
+        <div className="absolute inset-0 z-0 opacity-[0.05] pointer-events-none bg-[url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIyMDAiIGhlaWdodD0iMjAwIj4KICAgIDxmaWx0ZXIgaWQ9Im5vaXNlIj4KICAgICAgICA8ZmVUdXJidWxlbmNlIHR5cGU9ImZyYWN0YWxOb2lzZSIgYmFzZUZyZXF1ZW5jeT0iMC42NSIgbnVtT2N0YXZlcz0iMyIgc3RpdGNoVGlsZXM9InN0aXRjaCIvPgogICAgPC9maWx0ZXI+CiAgICA8cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWx0ZXI9InVybCgibm9pc2UpIi8+Cjwvc3ZnPg==')]"></div>
 
         {/* Real Fruit Background Images (Mouse Parallax) */}
         <div 
@@ -692,7 +692,7 @@ export default function Home() {
                 {/* QR Code Container */}
                 <div className="w-40 h-40 bg-[#FAFAFA] rounded-3xl p-3 shadow-[inset_0_2px_10px_rgba(0,0,0,0.03)] border border-[#E8E4DB]/60 mb-6 flex items-center justify-center relative group">
                   <div className="w-full h-full bg-white rounded-xl shadow-sm border border-[#f1f1f1] overflow-hidden relative opacity-90 group-hover:opacity-100 transition-opacity">
-                    <img src="/qr-code.png" alt="Scan to chat on WhatsApp" className="w-full h-full object-cover mix-blend-multiply" />
+                    <img src="/qr-code.png" alt="Scan to chat on WhatsApp" className="w-full h-full object-cover" />
                   </div>
                   {/* Center WhatsApp Logo on QR */}
                   <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 bg-white rounded-full p-1.5 shadow-md">
