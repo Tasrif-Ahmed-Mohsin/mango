@@ -125,13 +125,13 @@ function AdminContent({ onLogout }: { onLogout: () => void }) {
     e.preventDefault();
     setProdUploading(true);
 
-    let imageUrl: string | undefined;
-    if (prodImage) {
-      const url = await uploadImage(prodImage);
-      if (url) imageUrl = url;
-    }
-
     try {
+      let imageUrl: string | undefined;
+      if (prodImage) {
+        const url = await uploadImage(prodImage);
+        if (url) imageUrl = url;
+      }
+
       await addProduct({
         id: `p_${Date.now()}`,
         categoryId: prodCat || (categories[0] ? categories[0].id : ""),
@@ -152,10 +152,10 @@ function AdminContent({ onLogout }: { onLogout: () => void }) {
       setProdFarmer("");
       setProdImage(null);
       if (prodFileRef.current) prodFileRef.current.value = "";
+      await refreshData();
     } catch (err: any) {
       console.error('Add product failed:', err);
       alert('Failed to create product: ' + (err?.message || 'Unknown error'));
-      // Optionally revert optimistic update by reloading products from server
     } finally {
       setProdUploading(false);
     }
