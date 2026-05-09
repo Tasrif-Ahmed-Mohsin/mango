@@ -36,12 +36,12 @@ export default function ShopPage() {
   return (
     <main className="min-h-screen bg-[#FBF7F0]">
       {/* Header */}
-      <section className="bg-gradient-to-r from-[#0A4027] to-[#0d5a37] text-white py-16">
+      <section className="bg-gradient-to-r from-[#FAD65F] via-[#F8C93A] to-[#F0A500] text-[#0A4027] py-16 border-b border-[#E7B93A]/40">
         <div className="container mx-auto px-6">
           <h1 className="text-6xl md:text-7xl font-bold mb-4" style={{ fontFamily: "'Bebas Neue', sans-serif" }}>
-            <span className="text-white">Shop</span>{" "}<span className="text-[#FCD860]">All Products</span>
+            <span className="text-[#0A4027]">Shop</span>{" "}<span className="text-[#7A4D00]">All Products</span>
           </h1>
-          <p className="text-xl opacity-90">
+          <p className="text-xl text-[#3A5333] opacity-95">
             Discover fresh, organic agricultural products directly from farmers
           </p>
         </div>
@@ -52,10 +52,10 @@ export default function ShopPage() {
         <div className="grid grid-cols-1 lg:grid-cols-4 gap-8">
           {/* Sidebar - Filters */}
           <aside className="lg:col-span-1">
-            <div className="bg-white rounded-lg p-6 shadow-sm sticky top-24">
+            <div className="bg-[#FFF8E4] rounded-2xl p-6 shadow-[0_12px_30px_rgba(120,88,0,0.08)] border border-[#E7B93A]/30 sticky top-24">
               {/* Search */}
               <div className="mb-6">
-                <label className="block text-sm font-bold text-[#0A4027] mb-2">
+                <label className="block text-sm font-bold text-[#7A4D00] mb-2 uppercase tracking-wider">
                   Search Products
                 </label>
                 <input
@@ -63,19 +63,19 @@ export default function ShopPage() {
                   placeholder="Search..."
                   value={searchTerm}
                   onChange={(e) => setSearchTerm(e.target.value)}
-                  className="w-full px-4 py-2 border-2 border-[#0A4027]/20 rounded-lg focus:outline-none focus:border-[#0A4027]"
+                  className="w-full px-4 py-3 bg-white/90 text-[#0A4027] border-2 border-[#E7B93A]/45 rounded-xl focus:outline-none focus:border-[#F0A500] focus:ring-4 focus:ring-[#F0A500]/15 placeholder:text-[#81917C] transition"
                 />
               </div>
 
               {/* Categories */}
               <div className="mb-6">
-                <h3 className="font-bold text-[#0A4027] mb-3">Categories</h3>
+                <h3 className="font-bold text-[#7A4D00] mb-3 uppercase tracking-wider text-sm">Categories</h3>
                 <button
                   onClick={() => setSelectedCategory(null)}
                   className={`block w-full text-left px-3 py-2 rounded-lg transition-colors ${
                     selectedCategory === null
-                      ? "bg-[#0A4027] text-white"
-                      : "hover:bg-[#0A4027]/10"
+                      ? "bg-[#F0A500] text-[#0A4027] shadow-sm"
+                      : "hover:bg-[#F0A500]/10 text-[#0A4027]"
                   }`}
                 >
                   All Products
@@ -86,8 +86,8 @@ export default function ShopPage() {
                     onClick={() => setSelectedCategory(cat.id)}
                     className={`block w-full text-left px-3 py-2 rounded-lg transition-colors mt-2 ${
                       selectedCategory === cat.id
-                        ? "bg-[#0A4027] text-white"
-                        : "hover:bg-[#0A4027]/10"
+                        ? "bg-[#F0A500] text-[#0A4027] shadow-sm"
+                        : "hover:bg-[#F0A500]/10 text-[#0A4027]"
                     }`}
                   >
                     {cat.name}
@@ -97,13 +97,13 @@ export default function ShopPage() {
 
               {/* Sort */}
               <div>
-                <label className="block text-sm font-bold text-[#0A4027] mb-2">
+                <label className="block text-sm font-bold text-[#7A4D00] mb-2 uppercase tracking-wider">
                   Sort By
                 </label>
                 <select
                   value={sortBy}
                   onChange={(e) => setSortBy(e.target.value as any)}
-                  className="w-full px-4 py-2 border-2 border-[#0A4027]/20 rounded-lg focus:outline-none focus:border-[#0A4027]"
+                  className="w-full px-4 py-3 bg-white/90 text-[#0A4027] border-2 border-[#E7B93A]/45 rounded-xl focus:outline-none focus:border-[#F0A500] focus:ring-4 focus:ring-[#F0A500]/15 transition"
                 >
                   <option value="name">Product Name</option>
                   <option value="price-low">Price: Low to High</option>

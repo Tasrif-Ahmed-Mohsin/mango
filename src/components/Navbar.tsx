@@ -34,7 +34,7 @@ export default function Navbar() {
     <header
       className={`sticky top-0 z-50 transition-all duration-300 ${
         isScrolled
-          ? "bg-white/35 backdrop-blur-xl supports-[backdrop-filter]:bg-white/30 border-b border-white/40 shadow-[0_10px_30px_rgba(10,64,39,0.12)] py-3"
+          ? "bg-[#FAD65F]/92 backdrop-blur-xl supports-[backdrop-filter]:bg-[#FAD65F]/88 border-b border-[#E7B93A]/40 shadow-[0_10px_30px_rgba(120,88,0,0.14)] py-3"
           : "bg-[#FAD65F] py-5"
       }`}
     >
@@ -101,8 +101,8 @@ export default function Navbar() {
         <div className={`md:hidden overflow-hidden transition-all duration-300 ease-in-out ${isMobileMenuOpen ? "max-h-64 opacity-100 mt-4" : "max-h-0 opacity-0"}`}>
           <div className={`flex flex-col gap-4 font-bold text-[15px] text-[#0A4027] rounded-xl p-4 border ${
             isScrolled
-              ? "bg-white/45 backdrop-blur-xl border-white/45 shadow-[0_12px_30px_rgba(10,64,39,0.12)]"
-              : "bg-[#FAD65F]/95 backdrop-blur-sm border-[#0A4027]/10 shadow-inner"
+                ? "bg-[#FAD65F]/95 backdrop-blur-xl border-[#E7B93A]/35 shadow-[0_12px_30px_rgba(120,88,0,0.12)]"
+                : "bg-[#FAD65F]/95 backdrop-blur-sm border-[#0A4027]/10 shadow-inner"
           }`}>
             {navLinks.map((link) => (
               <Link
