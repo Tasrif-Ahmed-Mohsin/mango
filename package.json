@@ -1,12 +1,14 @@
 {
-  "name": "temp_app",
-  "version": "0.1.0",
+  "name": "agricommerce",
+  "version": "1.0.0",
+  "description": "AgriCommerce - Premium mango e-commerce platform connecting farmers to customers",
   "private": true,
   "scripts": {
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "eslint"
+    "lint": "eslint",
+    "setup": "node setup.js && node setup_admin.js"
   },
   "dependencies": {
     "@stripe/react-stripe-js": "^6.3.0",
