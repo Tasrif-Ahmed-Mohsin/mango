@@ -130,7 +130,7 @@ export default function ShopPage() {
                   <Link
                     key={product.id}
                     href={`/product/${product.id}`}
-                    className="bg-white rounded-xl overflow-hidden shadow-md hover:shadow-xl transition-all duration-300 hover:scale-105 flex flex-col h-full"
+                    className="bg-white rounded-xl overflow-hidden shadow-md hover:shadow-xl transition-all duration-300 hover:scale-105 flex flex-col h-full p-2 md:p-0 touch-target"
                   >
                     {/* Product Image */}
                     <div className="relative h-32 sm:h-48 bg-gradient-to-br from-[#FCD860] to-[#F0A500] overflow-hidden flex items-center justify-center">

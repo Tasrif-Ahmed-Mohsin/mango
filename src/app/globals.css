@@ -143,7 +143,7 @@
   to   { transform: translateX(-50%); }
 }
 
-@theme inline {
+:root {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
   --font-sans: var(--font-sans), ui-sans-serif, system-ui, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
@@ -161,6 +161,24 @@
 body {
   background: var(--background);
   color: var(--foreground);
+}
+
+/* Mobile touch target helper and focus styles */
+.touch-target {
+  min-width: 44px;
+  min-height: 44px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+:focus-visible {
+  outline: 3px solid #F0A500;
+  outline-offset: 3px;
+}
+
+@media (max-width: 640px) {
+  html { font-size: 16px; }
 }
 
 /* Heart React Button – Uiverse.io */

@@ -34,15 +34,15 @@ export default function Navbar() {
     <header
       className={`sticky top-0 z-50 transition-all duration-300 ${
         isScrolled
-          ? "bg-[#FAD65F]/92 backdrop-blur-xl supports-[backdrop-filter]:bg-[#FAD65F]/88 border-b border-[#E7B93A]/40 shadow-[0_10px_30px_rgba(120,88,0,0.14)] py-3"
-          : "bg-[#FAD65F] py-5"
+          ? "bg-[#FAD65F]/92 backdrop-blur-xl supports-[backdrop-filter]:bg-[#FAD65F]/88 border-b border-[#E7B93A]/40 shadow-[0_10px_30px_rgba(120,88,0,0.14)] py-2 md:py-3"
+          : "bg-[#FAD65F] py-3 md:py-5"
       }`}
     >
       <div className="container mx-auto px-6">
         <div className="flex justify-between items-center">
           {/* Logo */}
           <Link href="/" className="flex items-center gap-2 hover:opacity-80 transition-opacity z-50">
-            <img src="/logo.webp" alt="Logo" className="h-10 w-auto object-contain drop-shadow-sm transition-transform hover:scale-105" />
+            <img src="/logo.webp" alt="Logo" className="h-9 md:h-10 w-auto object-contain drop-shadow-sm transition-transform hover:scale-105" />
           </Link>
 
           {/* Desktop Navigation */}
@@ -63,12 +63,12 @@ export default function Navbar() {
           {/* Icons & Mobile Toggle */}
           <div className="flex gap-5 items-center text-[#0A4027]">
             {/* Search Icon */}
-            <button className="hidden md:block hover:opacity-70 transition-opacity p-2 rounded-full hover:bg-white/20">
+            <button aria-label="Search" className="hidden md:block hover:opacity-70 transition-opacity p-3 md:p-2 rounded-full hover:bg-white/20 touch-target">
               <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
             </button>
 
             {/* Cart Icon */}
-            <Link href="/cart" className="relative hover:opacity-70 transition-opacity p-2 rounded-full hover:bg-white/20 flex items-center">
+            <Link href="/cart" aria-label="Cart" className="relative hover:opacity-70 transition-opacity p-3 md:p-2 rounded-full hover:bg-white/20 flex items-center touch-target">
               <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4Z"/><path d="M3 6h18"/><path d="M16 10a4 4 0 0 1-8 0"/></svg>
               {mounted && totalItems > 0 && (
                 <span className="absolute top-0 right-0 bg-red-500 text-white text-[10px] font-bold w-5 h-5 flex items-center justify-center rounded-full border-2 border-[#FAD65F] shadow-sm transform translate-x-1 -translate-y-1">
@@ -79,7 +79,8 @@ export default function Navbar() {
 
             {/* Mobile Menu Button */}
             <button 
-              className="md:hidden p-2 rounded-lg hover:bg-white/20 transition-colors"
+              aria-label="Open menu"
+              className="md:hidden p-3 rounded-lg hover:bg-white/20 transition-colors touch-target"
               onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
             >
               <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
@@ -99,17 +100,17 @@ export default function Navbar() {
 
         {/* Mobile Navigation Dropdown */}
         <div className={`md:hidden overflow-hidden transition-all duration-300 ease-in-out ${isMobileMenuOpen ? "max-h-64 opacity-100 mt-4" : "max-h-0 opacity-0"}`}>
-          <div className={`flex flex-col gap-4 font-bold text-[15px] text-[#0A4027] rounded-xl p-4 border ${
+          <div className={`flex flex-col gap-3 font-bold text-[15px] text-[#0A4027] rounded-xl p-3 border ${
             isScrolled
-                ? "bg-[#FAD65F]/95 backdrop-blur-xl border-[#E7B93A]/35 shadow-[0_12px_30px_rgba(120,88,0,0.12)]"
-                : "bg-[#FAD65F]/95 backdrop-blur-sm border-[#0A4027]/10 shadow-inner"
+              ? "bg-[#FAD65F]/95 backdrop-blur-xl border-[#E7B93A]/35 shadow-[0_12px_30px_rgba(120,88,0,0.12)]"
+              : "bg-[#FAD65F]/95 backdrop-blur-sm border-[#0A4027]/10 shadow-inner"
           }`}>
             {navLinks.map((link) => (
               <Link
                 key={link.path}
                 href={link.path}
                 onClick={() => setIsMobileMenuOpen(false)}
-                className={`p-2 rounded-lg transition-colors ${pathname === link.path ? "bg-[#0A4027]/10" : "hover:bg-[#0A4027]/5"}`}
+                className={`p-3 rounded-lg transition-colors touch-target ${pathname === link.path ? "bg-[#0A4027]/10" : "hover:bg-[#0A4027]/5"}`}
               >
                 {link.name}
               </Link>
