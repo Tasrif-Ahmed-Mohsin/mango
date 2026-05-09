@@ -42,9 +42,10 @@ export async function POST(request: Request) {
     const product = new Product(productData);
     await product.save();
     return Response.json({ success: true, message: "Product created", product });
-  } catch (error) {
+  } catch (error: any) {
     console.error("Product create error:", error);
-    return Response.json({ error: "Failed to create product" }, { status: 500 });
+    const message = error?.message || JSON.stringify(error) || "Failed to create product";
+    return Response.json({ error: message }, { status: 500 });
   }
 }
 
