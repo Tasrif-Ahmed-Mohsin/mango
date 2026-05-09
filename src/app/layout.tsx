@@ -45,7 +45,10 @@ export default function RootLayout({
         <meta name="theme-color" content="#FAD65F" media="(prefers-color-scheme: light)" />
         <meta name="theme-color" content="#FAD65F" media="(prefers-color-scheme: dark)" />
       </head>
-      <body className={`${poppins.className} ${fraunces.variable} ${bebas.variable} antialiased bg-[#FBF7F0] text-[#0A4027] tracking-tight`}>
+      <body
+        className={`${poppins.className} ${fraunces.variable} ${bebas.variable} antialiased bg-[#FBF7F0] text-[#0A4027] tracking-tight`}
+        style={{ backgroundColor: '#FBF7F0', color: '#0A4027' }}
+      >
         <DataProvider>
           <CartProvider>
             {/* Main Header */}
