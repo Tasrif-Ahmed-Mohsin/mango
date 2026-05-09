@@ -126,7 +126,6 @@ export function DataProvider({ children }: { children: React.ReactNode }) {
       }
       // Clear cache to force fresh fetch on next load
       localStorage.removeItem('products');
-      return res;
     } catch (err) {
       console.error("Failed to save product to MongoDB", err);
       throw err;
