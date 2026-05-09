@@ -84,8 +84,19 @@ function AdminContent({ onLogout }: { onLogout: () => void }) {
     try {
       const res = await fetch("/api/upload", { method: "POST", body: formData });
       const data = await res.json();
-      return data.url || null;
-    } catch {
+      if (!res.ok) {
+        console.error("Upload error:", res.status, data.error);
+        throw new Error(data.error || "Upload failed");
+      }
+      if (!data.url) {
+        console.error("Upload returned no URL:", data);
+        throw new Error("No URL returned from upload");
+      }
+      console.log("Image uploaded successfully:", data.url);
+      return data.url;
+    } catch (err: any) {
+      console.error("Image upload failed:", err);
+      alert("Image upload failed: " + (err?.message || "Unknown error"));
       return null;
     }
   };

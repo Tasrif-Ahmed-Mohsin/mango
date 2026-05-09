@@ -12,11 +12,16 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: "No file provided" }, { status: 400 });
     }
 
+    console.log("Upload: BLOB_READ_WRITE_TOKEN present?", !!process.env.BLOB_READ_WRITE_TOKEN);
+    console.log("Upload file:", file.name, file.size, file.type);
+
     // Use Vercel Blob if token is available (Production/Vercel)
     if (process.env.BLOB_READ_WRITE_TOKEN) {
+      console.log("Using Vercel Blob storage...");
       const blob = await put(file.name, file, {
         access: "public",
       });
+      console.log("Blob uploaded successfully:", blob.url);
       return NextResponse.json({ url: blob.url, success: true });
     }
 
@@ -34,10 +39,11 @@ export async function POST(request: NextRequest) {
     await writeFile(filepath, buffer);
 
     const publicPath = `/uploads/${filename}`;
+    console.log("Local upload successful:", publicPath);
     return NextResponse.json({ url: publicPath, success: true });
-  } catch (error) {
-    console.error("Upload error:", error);
-    return NextResponse.json({ error: "Upload failed" }, { status: 500 });
+  } catch (error: any) {
+    console.error("Upload error:", error?.message || error);
+    return NextResponse.json({ error: error?.message || "Upload failed" }, { status: 500 });
   }
 }
 
