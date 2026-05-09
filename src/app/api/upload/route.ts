@@ -15,18 +15,32 @@ export async function POST(request: NextRequest) {
     console.log("Upload: BLOB_READ_WRITE_TOKEN present?", !!process.env.BLOB_READ_WRITE_TOKEN);
     console.log("Upload file:", file.name, file.size, file.type);
 
-    // Use Vercel Blob if token is available (Production/Vercel)
+    // Try Vercel Blob if token is available
     if (process.env.BLOB_READ_WRITE_TOKEN) {
-      console.log("Using Vercel Blob storage...");
-      const blob = await put(file.name, file, {
-        access: "public",
-      });
-      console.log("Blob uploaded successfully:", blob.url);
-      return NextResponse.json({ url: blob.url, success: true });
+      try {
+        console.log("Using Vercel Blob storage...");
+        const blob = await put(file.name, file, {
+          access: "public",
+        });
+        console.log("Blob uploaded successfully:", blob.url);
+        return NextResponse.json({ url: blob.url, success: true });
+      } catch (blobError: any) {
+        console.error("Blob upload failed:", blobError?.message);
+        throw new Error(`Vercel Blob error: ${blobError?.message}`);
+      }
     }
 
-    // Fallback to local storage for local development
-    console.warn("BLOB_READ_WRITE_TOKEN not found, falling back to local storage");
+    // On Vercel production without Blob token, filesystem is read-only
+    const isProduction = process.env.VERCEL_ENV === 'production' || process.env.NODE_ENV === 'production';
+    if (isProduction) {
+      console.error("BLOB_READ_WRITE_TOKEN not configured on production");
+      return NextResponse.json({ 
+        error: "Image uploads not configured. Please set up Vercel Blob Storage with BLOB_READ_WRITE_TOKEN environment variable." 
+      }, { status: 503 });
+    }
+
+    // Fallback to local storage for local development only
+    console.warn("Using local storage for development only");
     const bytes = await file.arrayBuffer();
     const buffer = Buffer.from(bytes);
 
