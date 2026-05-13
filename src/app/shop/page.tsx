@@ -157,7 +157,7 @@ export default function ShopPage() {
                       {/* Price & Stock */}
                       <div className="flex justify-between items-center">
                         <span className="text-base sm:text-2xl font-bold text-[#F0A500]">
-                          ₹{product.price}
+                          ৳{product.price}
                         </span>
                         <span
                           className={`text-[10px] sm:text-sm font-semibold px-2 sm:px-3 py-1 rounded-full ${

@@ -1,5 +1,7 @@
 import { connectDB } from "@/lib/mongodb";
 import { Category } from "@/lib/models";
+import { verifyAuth } from "@/lib/auth";
+import { categorySchema } from "@/lib/validation";
 
 export async function GET() {
   try {
@@ -20,7 +22,19 @@ export async function GET() {
 
 export async function POST(request: Request) {
   try {
-    const categoryData = await request.json();
+    const authPayload = await verifyAuth();
+    if (!authPayload) {
+      return Response.json({ error: "Unauthorized" }, { status: 401 });
+    }
+
+    const rawData = await request.json();
+    const parseResult = categorySchema.safeParse(rawData);
+
+    if (!parseResult.success) {
+      return Response.json({ error: "Validation failed", details: parseResult.error.issues }, { status: 400 });
+    }
+
+    const categoryData = parseResult.data;
     await connectDB();
     
     // Check if category exists (using the custom 'id' field)
@@ -40,9 +54,20 @@ export async function POST(request: Request) {
   }
 }
 
+
 export async function DELETE(request: Request) {
   try {
+    const authPayload = await verifyAuth();
+    if (!authPayload) {
+      return Response.json({ error: "Unauthorized" }, { status: 401 });
+    }
+
     const { id } = await request.json();
+
+    if (!id || typeof id !== 'string') {
+      return Response.json({ error: "Invalid category ID" }, { status: 400 });
+    }
+
     await connectDB();
     const result = await Category.deleteOne({ id });
     if (!result.deletedCount) {

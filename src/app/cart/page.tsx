@@ -56,7 +56,7 @@ export default function CartPage() {
               </div>
               <div className="text-center w-24">
                 <span className="block text-sm text-[#3A5333] font-medium">Total</span>
-                <span className="font-bold text-[#F0A500] text-xl">₹{(item.product!.price * item.quantity).toFixed(2)}</span>
+                <span className="font-bold text-[#F0A500] text-xl">৳{(item.product!.price * item.quantity).toFixed(2)}</span>
               </div>
               <button 
                 onClick={() => removeFromCart(item.productId)} 
@@ -77,7 +77,7 @@ export default function CartPage() {
           <div className="flex items-center gap-8">
             <div className="text-right">
               <span className="block text-sm text-[#3A5333] font-medium mb-1">Estimated Total</span>
-              <span className="text-4xl font-extrabold text-[#0A4027]">₹{total.toFixed(2)}</span>
+              <span className="text-4xl font-extrabold text-[#0A4027]">৳{total.toFixed(2)}</span>
             </div>
             <Link href="/checkout" className="inline-block bg-[#FCD860] text-[#0A4027] px-8 py-4 rounded-full font-bold text-sm hover:bg-[#F0A500] transition shadow-md">
               Proceed to Checkout

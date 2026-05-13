@@ -56,7 +56,7 @@ export default function CategoryPage() {
                     <div className="flex justify-between items-start mb-2 gap-2">
                       <h3 className="font-bold text-xl text-gray-900 group-hover:text-white transition-colors duration-300 leading-tight line-clamp-1 tracking-tight">{p.name}</h3>
                       <div className="bg-gray-900 group-hover:bg-black/30 text-white text-xs font-bold px-3 py-1.5 rounded-full transition-colors duration-300 shrink-0">
-                        ${p.price.toFixed(2)}
+                        ৳{p.price.toFixed(2)}
                       </div>
                     </div>
                     <p className="text-[11px] text-gray-500 group-hover:text-white/90 transition-colors duration-300 line-clamp-2 mb-4 leading-relaxed font-medium">

@@ -1,5 +1,7 @@
 import { connectDB } from "@/lib/mongodb";
 import { Product } from "@/lib/models";
+import { verifyAuth } from "@/lib/auth";
+import { productSchema } from "@/lib/validation";
 
 export async function GET(request: Request) {
   try {
@@ -28,7 +30,19 @@ export async function GET(request: Request) {
 
 export async function POST(request: Request) {
   try {
-    const productData = await request.json();
+    const authPayload = await verifyAuth();
+    if (!authPayload) {
+      return Response.json({ error: "Unauthorized" }, { status: 401 });
+    }
+
+    const rawData = await request.json();
+    const parseResult = productSchema.safeParse(rawData);
+
+    if (!parseResult.success) {
+      return Response.json({ error: "Validation failed", details: parseResult.error.issues }, { status: 400 });
+    }
+
+    const productData = parseResult.data;
     await connectDB();
 
     // Check if product exists (using the custom 'id' field)
@@ -49,9 +63,20 @@ export async function POST(request: Request) {
   }
 }
 
+
 export async function DELETE(request: Request) {
   try {
+    const authPayload = await verifyAuth();
+    if (!authPayload) {
+      return Response.json({ error: "Unauthorized" }, { status: 401 });
+    }
+
     const { id } = await request.json();
+    
+    if (!id || typeof id !== 'string') {
+      return Response.json({ error: "Invalid product ID" }, { status: 400 });
+    }
+
     await connectDB();
     const result = await Product.deleteOne({ id });
     if (!result.deletedCount) {

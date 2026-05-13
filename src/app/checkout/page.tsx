@@ -4,6 +4,7 @@ import { useRouter } from "next/navigation";
 import { useCart } from "@/context/CartContext";
 import { useData } from "@/context/DataContext";
 import Link from "next/link";
+import toast from "react-hot-toast";
 
 export default function CheckoutPage() {
   const router = useRouter();
@@ -13,7 +14,6 @@ export default function CheckoutPage() {
   const [loading, setLoading] = useState(false);
   const [orderId, setOrderId] = useState("");
 
-  // Form states
   const [formData, setFormData] = useState({
     firstName: "",
     lastName: "",
@@ -23,10 +23,7 @@ export default function CheckoutPage() {
     city: "",
     state: "",
     zip: "",
-    cardName: "",
-    cardNumber: "",
-    expiryDate: "",
-    cvv: "",
+    paymentMethod: "cod", // "cod" | "bkash" | "nagad"
   });
 
   // Calculate totals
@@ -104,18 +101,27 @@ export default function CheckoutPage() {
           tax,
           total,
         },
-        status: "confirmed",
+        paymentMethod: formData.paymentMethod,
+        status: "pending", // changed from confirmed since payment might be manual
       };
 
       // Try to save to database
       try {
-        await fetch("/api/orders", {
+        const res = await fetch("/api/orders", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify(orderData),
         });
-      } catch (apiError) {
-        console.log("API call failed, but order will be saved locally");
+        
+        if (!res.ok) {
+          const errData = await res.json();
+          throw new Error(errData.error || "Failed to place order");
+        }
+      } catch (apiError: any) {
+        console.error("API call failed:", apiError);
+        toast.error(apiError.message || "Failed to process order. Please try again.");
+        setLoading(false);
+        return;
       }
 
       // Also save to localStorage as fallback
@@ -126,8 +132,9 @@ export default function CheckoutPage() {
       setOrderId(orderId);
       clearCart();
       setStep("confirmation");
+      toast.success("Order placed successfully!");
     } catch (error) {
-      alert("Failed to process order. Please try again.");
+      toast.error("Failed to process order. Please try again.");
     } finally {
       setLoading(false);
     }
@@ -153,15 +160,17 @@ export default function CheckoutPage() {
                 </div>
                 <div>
                   <p className="text-sm text-gray-600">Order Total</p>
-                  <p className="text-xl font-bold text-[#0A4027]">₹{total.toFixed(2)}</p>
+                  <p className="text-xl font-bold text-[#0A4027]">৳{total.toFixed(2)}</p>
                 </div>
                 <div>
-                  <p className="text-sm text-gray-600">Estimated Delivery</p>
-                  <p className="text-xl font-bold text-[#0A4027]">3-5 Days</p>
+                  <p className="text-sm text-gray-600">Payment Method</p>
+                  <p className="text-xl font-bold text-[#0A4027]">
+                    {formData.paymentMethod === "cod" ? "Cash on Delivery" : formData.paymentMethod === "bkash" ? "bKash" : "Nagad"}
+                  </p>
                 </div>
                 <div>
                   <p className="text-sm text-gray-600">Status</p>
-                  <p className="text-xl font-bold text-green-600">Confirmed</p>
+                  <p className="text-xl font-bold text-yellow-600">Pending</p>
                 </div>
               </div>
 
@@ -352,66 +361,61 @@ export default function CheckoutPage() {
 
             {step === "payment" && (
               <form onSubmit={handlePaymentSubmit} className="bg-white rounded-lg shadow-md p-8">
-                <h2 className="text-2xl font-bold text-[#0A4027] mb-6">Payment Information</h2>
+                <h2 className="text-2xl font-bold text-[#0A4027] mb-6">Payment Method</h2>
 
-                <div className="mb-6">
-                  <label className="block text-sm font-bold text-[#0A4027] mb-2">
-                    Cardholder Name *
+                <div className="space-y-4 mb-8">
+                  {/* Cash on Delivery */}
+                  <label className={`block border-2 rounded-xl p-4 cursor-pointer transition-all ${formData.paymentMethod === 'cod' ? 'border-[#0A4027] bg-[#0A4027]/5' : 'border-gray-200 hover:border-[#0A4027]/50'}`}>
+                    <div className="flex items-center gap-4">
+                      <input 
+                        type="radio" 
+                        name="paymentMethod" 
+                        value="cod" 
+                        checked={formData.paymentMethod === 'cod'}
+                        onChange={handleInputChange}
+                        className="w-5 h-5 text-[#0A4027] focus:ring-[#0A4027]"
+                      />
+                      <div>
+                        <h4 className="font-bold text-[#0A4027]">Cash on Delivery</h4>
+                        <p className="text-sm text-gray-600">Pay when your order arrives.</p>
+                      </div>
+                    </div>
                   </label>
-                  <input
-                    type="text"
-                    name="cardName"
-                    value={formData.cardName}
-                    onChange={handleInputChange}
-                    className="w-full px-4 py-3 border-2 border-[#0A4027]/20 rounded-lg focus:outline-none focus:border-[#0A4027]"
-                    required
-                  />
-                </div>
 
-                <div className="mb-6">
-                  <label className="block text-sm font-bold text-[#0A4027] mb-2">
-                    Card Number *
+                  {/* Mobile Banking Options for BD */}
+                  <label className={`block border-2 rounded-xl p-4 cursor-pointer transition-all ${formData.paymentMethod === 'bkash' ? 'border-[#E2136E] bg-[#E2136E]/5' : 'border-gray-200 hover:border-[#E2136E]/50'}`}>
+                    <div className="flex items-center gap-4">
+                      <input 
+                        type="radio" 
+                        name="paymentMethod" 
+                        value="bkash" 
+                        checked={formData.paymentMethod === 'bkash'}
+                        onChange={handleInputChange}
+                        className="w-5 h-5 text-[#E2136E] focus:ring-[#E2136E]"
+                      />
+                      <div>
+                        <h4 className="font-bold text-[#E2136E]">bKash Manual Payment</h4>
+                        <p className="text-sm text-gray-600">We will call you with instructions after placing the order.</p>
+                      </div>
+                    </div>
                   </label>
-                  <input
-                    type="text"
-                    name="cardNumber"
-                    value={formData.cardNumber}
-                    onChange={handleInputChange}
-                    placeholder="1234 5678 9012 3456"
-                    className="w-full px-4 py-3 border-2 border-[#0A4027]/20 rounded-lg focus:outline-none focus:border-[#0A4027]"
-                    required
-                  />
-                </div>
 
-                <div className="grid grid-cols-2 gap-4 mb-6">
-                  <div>
-                    <label className="block text-sm font-bold text-[#0A4027] mb-2">
-                      Expiry Date *
-                    </label>
-                    <input
-                      type="text"
-                      name="expiryDate"
-                      value={formData.expiryDate}
-                      onChange={handleInputChange}
-                      placeholder="MM/YY"
-                      className="w-full px-4 py-3 border-2 border-[#0A4027]/20 rounded-lg focus:outline-none focus:border-[#0A4027]"
-                      required
-                    />
-                  </div>
-                  <div>
-                    <label className="block text-sm font-bold text-[#0A4027] mb-2">
-                      CVV *
-                    </label>
-                    <input
-                      type="text"
-                      name="cvv"
-                      value={formData.cvv}
-                      onChange={handleInputChange}
-                      placeholder="123"
-                      className="w-full px-4 py-3 border-2 border-[#0A4027]/20 rounded-lg focus:outline-none focus:border-[#0A4027]"
-                      required
-                    />
-                  </div>
+                  <label className={`block border-2 rounded-xl p-4 cursor-pointer transition-all ${formData.paymentMethod === 'nagad' ? 'border-[#F7941D] bg-[#F7941D]/5' : 'border-gray-200 hover:border-[#F7941D]/50'}`}>
+                    <div className="flex items-center gap-4">
+                      <input 
+                        type="radio" 
+                        name="paymentMethod" 
+                        value="nagad" 
+                        checked={formData.paymentMethod === 'nagad'}
+                        onChange={handleInputChange}
+                        className="w-5 h-5 text-[#F7941D] focus:ring-[#F7941D]"
+                      />
+                      <div>
+                        <h4 className="font-bold text-[#F7941D]">Nagad Manual Payment</h4>
+                        <p className="text-sm text-gray-600">We will call you with instructions after placing the order.</p>
+                      </div>
+                    </div>
+                  </label>
                 </div>
 
                 <div className="flex gap-4">
@@ -447,7 +451,7 @@ export default function CheckoutPage() {
                       <p className="text-sm text-gray-600">Qty: {item.quantity}</p>
                     </div>
                     <p className="font-bold text-[#0A4027]">
-                      ₹{((item.price || 0) * (item.quantity || 1)).toFixed(2)}
+                      ৳{((item.price || 0) * (item.quantity || 1)).toFixed(2)}
                     </p>
                   </div>
                 ))}
@@ -456,25 +460,25 @@ export default function CheckoutPage() {
               <div className="space-y-3">
                 <div className="flex justify-between text-gray-700">
                   <span>Subtotal:</span>
-                  <span>₹{subtotal.toFixed(2)}</span>
+                  <span>৳{subtotal.toFixed(2)}</span>
                 </div>
                 <div className="flex justify-between text-gray-700">
                   <span>Shipping:</span>
-                  <span>{shipping === 0 ? "Free" : `₹${shipping.toFixed(2)}`}</span>
+                  <span>{shipping === 0 ? "Free" : `৳${shipping.toFixed(2)}`}</span>
                 </div>
                 <div className="flex justify-between text-gray-700">
                   <span>Tax (10%):</span>
-                  <span>₹{tax.toFixed(2)}</span>
+                  <span>৳{tax.toFixed(2)}</span>
                 </div>
                 <div className="flex justify-between text-xl font-bold text-[#0A4027] pt-3 border-t-2 border-[#0A4027]/10">
                   <span>Total:</span>
-                  <span>₹{total.toFixed(2)}</span>
+                  <span>৳{total.toFixed(2)}</span>
                 </div>
               </div>
 
               {subtotal > 500 && (
                 <div className="mt-4 p-3 bg-green-100 text-green-700 rounded-lg text-sm">
-                  ✅ Free shipping on orders over ₹500!
+                  ✅ Free shipping on orders over ৳500!
                 </div>
               )}
             </div>

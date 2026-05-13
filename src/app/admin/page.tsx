@@ -2,6 +2,7 @@
 import { useEffect, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import { useData } from "../../context/DataContext";
+import toast from "react-hot-toast";
 
 type DeleteConfirm = { type: "cat" | "prod"; id: string; name: string } | null;
 
@@ -59,6 +60,40 @@ export default function AdminPage() {
 function AdminContent({ onLogout }: { onLogout: () => void }) {
   const { categories, products, addCategory, addProduct, removeCategory, removeProduct, refreshData } = useData();
 
+  const [activeTab, setActiveTab] = useState<"catalog" | "orders">("catalog");
+  const [orders, setOrders] = useState<any[]>([]);
+
+  const fetchOrders = async () => {
+    try {
+      const res = await fetch("/api/orders");
+      const data = await res.json();
+      if (res.ok) setOrders(data.orders);
+    } catch (err) {
+      console.error("Failed to fetch orders", err);
+    }
+  };
+
+  useEffect(() => {
+    fetchOrders();
+  }, []);
+
+  const handleUpdateOrderStatus = async (orderId: string, newStatus: string) => {
+    try {
+      const res = await fetch(`/api/orders/${orderId}`, {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ status: newStatus })
+      });
+      if (res.ok) {
+        fetchOrders();
+        toast.success("Order status updated");
+      }
+    } catch (err) {
+      console.error("Failed to update status", err);
+      toast.error("Failed to update order status");
+    }
+  };
+
   const [catName, setCatName] = useState("");
   const [catImage, setCatImage] = useState<File | null>(null);
   const [catImageUrl, setCatImageUrl] = useState("");
@@ -94,11 +129,10 @@ function AdminContent({ onLogout }: { onLogout: () => void }) {
         console.error("Upload returned no URL:", data);
         throw new Error("No URL returned from upload");
       }
-      console.log("Image uploaded successfully:", data.url);
       return data.url;
     } catch (err: any) {
       console.error("Image upload failed:", err);
-      alert("Image upload failed: " + (err?.message || "Unknown error"));
+      toast.error("Image upload failed: " + (err?.message || "Unknown error"));
       return null;
     }
   };
@@ -129,9 +163,10 @@ function AdminContent({ onLogout }: { onLogout: () => void }) {
       setCatImageUrl("");
       if (catFileRef.current) catFileRef.current.value = "";
       await refreshData();
+      toast.success("Category added successfully");
     } catch (err: any) {
       console.error('Add category failed:', err);
-      alert('Failed to create category: ' + (err?.message || 'Unknown error'));
+      toast.error('Failed to create category: ' + (err?.message || 'Unknown error'));
     } finally {
       setCatUploading(false);
     }
@@ -172,9 +207,10 @@ function AdminContent({ onLogout }: { onLogout: () => void }) {
       setProdImageUrl("");
       if (prodFileRef.current) prodFileRef.current.value = "";
       await refreshData();
+      toast.success("Product added successfully");
     } catch (err: any) {
       console.error('Add product failed:', err);
-      alert('Failed to create product: ' + (err?.message || 'Unknown error'));
+      toast.error('Failed to create product: ' + (err?.message || 'Unknown error'));
     } finally {
       setProdUploading(false);
     }
@@ -192,9 +228,10 @@ function AdminContent({ onLogout }: { onLogout: () => void }) {
       else await removeProduct(deleteConfirm.id);
       setDeleteConfirm(null);
       await refreshData();
+      toast.success("Deleted successfully");
     } catch (err: any) {
       console.error('Delete failed:', err);
-      alert('Failed to delete: ' + (err?.message || 'Unknown error'));
+      toast.error('Failed to delete: ' + (err?.message || 'Unknown error'));
     } finally {
       setIsDeleting(false);
     }
@@ -237,11 +274,27 @@ function AdminContent({ onLogout }: { onLogout: () => void }) {
             </button>
           </div>
         </div>
+        
+        {/* Tabs */}
+        <div className="flex gap-4 border-b border-[#EAE3D5] pb-2">
+          <button 
+            onClick={() => setActiveTab("catalog")}
+            className={`px-4 py-2 font-bold transition-colors ${activeTab === "catalog" ? "text-[#B04132] border-b-2 border-[#B04132]" : "text-[#81917C] hover:text-[#2A4026]"}`}
+          >
+            Catalog & Products
+          </button>
+          <button 
+            onClick={() => { setActiveTab("orders"); fetchOrders(); }}
+            className={`pb-2 text-sm font-bold uppercase tracking-widest transition-colors ${activeTab === "orders" ? "border-b-2 border-[#B04132] text-[#B04132]" : "text-[#81917C] hover:text-[#2A4026]"}`}
+          >
+            Orders
+          </button>
+        </div>
       </div>
 
-
-
-      <div className="mb-16 grid grid-cols-1 gap-10 md:grid-cols-2">
+      {activeTab === "catalog" && (
+        <>
+          <div className="mb-16 grid grid-cols-1 gap-10 md:grid-cols-2">
         <div className="rounded-3xl border border-[#EAE3D5] bg-[#FDFCF8] p-8 shadow-sm">
           <h2 className="mb-8 text-2xl font-serif font-bold text-[#B04132]">Add New Category</h2>
           <form onSubmit={handleAddCategory} className="flex flex-col gap-6">
@@ -288,7 +341,7 @@ function AdminContent({ onLogout }: { onLogout: () => void }) {
                 </select>
               </div>
               <div>
-                <label className={labelClass}>Price ($)</label>
+                <label className={labelClass}>Price (৳)</label>
                 <input required type="number" step="0.01" value={prodPrice} onChange={(e) => setProdPrice(e.target.value)} className={inputClass} />
               </div>
             </div>
@@ -365,7 +418,7 @@ function AdminContent({ onLogout }: { onLogout: () => void }) {
                   <span className="text-xl">{p.emoji || "📦"}</span>
                   <div className="flex-1 flex-col">
                     <span className="font-bold">{p.name}</span>
-                    <span className="text-xs text-[#81917C]">${p.price?.toFixed(2)}/{p.unit || "kg"}</span>
+                    <span className="text-xs text-[#81917C]">৳{p.price?.toFixed(2)}/{p.unit || "kg"}</span>
                   </div>
                   {p.image && <img src={p.image} alt="" className="h-8 w-8 rounded-lg object-cover" />}
                   <button onClick={() => confirmDelete("prod", p.id, p.name)} className="rounded-lg p-2 text-[#B04132] opacity-0 transition-opacity hover:bg-red-50 group-hover:opacity-100" title="Delete product">
@@ -377,6 +430,61 @@ function AdminContent({ onLogout }: { onLogout: () => void }) {
           </div>
         </div>
       </div>
+      </>
+      )}
+
+      {activeTab === "orders" && (
+        <div className="rounded-3xl border border-[#EAE3D5] bg-[#FDFCF8] p-10 shadow-sm">
+          <h2 className="mb-8 text-2xl font-serif font-bold text-[#B04132]">Order Management</h2>
+          {orders.length === 0 ? (
+            <p className="text-sm italic text-[#81917C]">No orders have been placed yet.</p>
+          ) : (
+            <div className="overflow-x-auto">
+              <table className="w-full text-left text-sm">
+                <thead>
+                  <tr className="border-b-2 border-[#EAE3D5] text-[#81917C]">
+                    <th className="pb-3 font-bold uppercase tracking-widest">Order ID</th>
+                    <th className="pb-3 font-bold uppercase tracking-widest">Customer</th>
+                    <th className="pb-3 font-bold uppercase tracking-widest">Total (৳)</th>
+                    <th className="pb-3 font-bold uppercase tracking-widest">Method</th>
+                    <th className="pb-3 font-bold uppercase tracking-widest">Date</th>
+                    <th className="pb-3 font-bold uppercase tracking-widest">Status</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {orders.map((o) => (
+                    <tr key={o._id} className="border-b border-[#EAE3D5] hover:bg-[#FAF7F0] transition-colors">
+                      <td className="py-4 font-mono font-medium text-[#2A4026]">{o.orderId}</td>
+                      <td className="py-4 text-[#2A4026]">
+                        <div>{o.customer.firstName} {o.customer.lastName}</div>
+                        <div className="text-xs text-[#81917C]">{o.customer.email} • {o.customer.phone}</div>
+                      </td>
+                      <td className="py-4 font-bold text-[#B04132]">৳{o.totals?.total?.toFixed(2)}</td>
+                      <td className="py-4">
+                        <span className="px-2 py-1 bg-gray-100 rounded text-xs font-semibold uppercase">{o.paymentMethod || "cod"}</span>
+                      </td>
+                      <td className="py-4 text-[#81917C]">{new Date(o.createdAt).toLocaleDateString()}</td>
+                      <td className="py-4">
+                        <select 
+                          value={o.status}
+                          onChange={(e) => handleUpdateOrderStatus(o.orderId, e.target.value)}
+                          className="border border-[#D4CFC3] rounded p-1 text-xs font-bold uppercase focus:outline-none"
+                        >
+                          <option value="pending">Pending</option>
+                          <option value="confirmed">Confirmed</option>
+                          <option value="shipped">Shipped</option>
+                          <option value="delivered">Delivered</option>
+                          <option value="cancelled">Cancelled</option>
+                        </select>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          )}
+        </div>
+      )}
     </div>
   );
 }

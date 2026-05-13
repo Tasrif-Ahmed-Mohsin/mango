@@ -72,7 +72,7 @@ export default function Home() {
 
       for (let i = 0; i < slots.length; i++) {
         const s = slots[i];
-        
+
         // Deterministic scroll target (moves opposite to scroll direction for parallax effect)
         const targetScrollY = y * s.amp * -0.015;
         // Smooth lerp towards target to completely eliminate jitter
@@ -82,7 +82,7 @@ export default function Home() {
         const floatY = Math.sin(t * 0.4 + s.phase) * 12;
         const floatX = Math.cos(t * 0.3 + s.phase * 1.5) * 15;
         const floatR = Math.sin(t * 0.2 + s.phase) * 4;
-        
+
         // Rotation sway based gently on scroll distance
         const swayR = s.py * -0.08;
 
@@ -181,7 +181,7 @@ export default function Home() {
       </div>
 
       {/* Hero Section */}
-      <section 
+      <section
         className="relative overflow-hidden pt-14 pb-24 md:pt-16 md:pb-28 flex flex-col justify-center min-h-[68vh] md:min-h-[85vh] bg-[#FAD65F] isolate"
         onMouseMove={(e) => {
           const x = (e.clientX / window.innerWidth - 0.5) * 30;
@@ -194,13 +194,13 @@ export default function Home() {
         <div className="absolute inset-0 z-0 opacity-[0.05] pointer-events-none bg-[url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIyMDAiIGhlaWdodD0iMjAwIj4KICAgIDxmaWx0ZXIgaWQ9Im5vaXNlIj4KICAgICAgICA8ZmVUdXJidWxlbmNlIHR5cGU9ImZyYWN0YWxOb2lzZSIgYmFzZUZyZXF1ZW5jeT0iMC42NSIgbnVtT2N0YXZlcz0iMyIgc3RpdGNoVGlsZXM9InN0aXRjaCIvPgogICAgPC9maWx0ZXI+CiAgICA8cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWx0ZXI9InVybCgibm9pc2UpIi8+Cjwvc3ZnPg==')]"></div>
 
         {/* Real Fruit Background Images (Mouse Parallax) */}
-        <div 
+        <div
           className="absolute -bottom-12 -left-12 md:-left-4 md:-bottom-4 w-5/12 sm:w-1/4 md:w-1/5 h-auto opacity-100 z-0 hero-mango-l transition-transform duration-300 ease-out"
           style={{ transform: `translate3d(${mousePos.x}px, ${mousePos.y}px, 0)` }}
         >
           <img src="/1.webp" alt="Real Mango 1" loading="lazy" decoding="async" className="w-full h-full object-contain filter drop-shadow-2xl transform rotate-12" />
         </div>
-        <div 
+        <div
           className="absolute -bottom-12 -right-12 md:-right-4 md:-bottom-4 w-1/2 sm:w-1/3 md:w-1/4 h-auto opacity-100 z-0 hero-mango-r transition-transform duration-300 ease-out"
           style={{ transform: `translate3d(${-mousePos.x}px, ${-mousePos.y}px, 0)` }}
         >
@@ -229,7 +229,7 @@ export default function Home() {
               />
             </div>
           </div>
-          
+
           <div className="mt-8 md:mt-10 mx-auto flex max-w-2xl flex-col items-center gap-5 md:gap-6 reveal anim-fade-up delay-200">
 
             {/* Animated Text Slideshow */}
@@ -264,11 +264,10 @@ export default function Home() {
                 <button
                   key={i}
                   onClick={() => setSlideIndex(i)}
-                  className={`rounded-full transition-all duration-300 ${
-                    i === slideIndex
-                      ? 'w-4 h-1.5 bg-[#0A4027]'
-                      : 'w-1.5 h-1.5 bg-[#0A4027]/30'
-                  }`}
+                  className={`rounded-full transition-all duration-300 ${i === slideIndex
+                    ? 'w-4 h-1.5 bg-[#0A4027]'
+                    : 'w-1.5 h-1.5 bg-[#0A4027]/30'
+                    }`}
                 />
               ))}
             </div>
@@ -286,7 +285,7 @@ export default function Home() {
         </div>
 
         {/* Scroll Indicator */}
-        <div 
+        <div
           className="absolute bottom-6 left-1/2 -translate-x-1/2 z-20 flex flex-col items-center gap-2 cursor-pointer opacity-70 hover:opacity-100 transition-opacity"
           onClick={(e) => { e.preventDefault(); document.getElementById('shop')?.scrollIntoView({ behavior: 'smooth' }); }}
         >
@@ -448,7 +447,7 @@ export default function Home() {
                     <div className="flex justify-between items-start mb-2 gap-2">
                       <h3 className="font-bold text-sm sm:text-xl text-gray-900 group-hover:text-white transition-colors duration-300 leading-tight line-clamp-1 tracking-tight">{p.name}</h3>
                       <div className="bg-gray-900 group-hover:bg-black/30 text-white text-[10px] sm:text-xs font-bold px-2.5 sm:px-3 py-1 sm:py-1.5 rounded-full transition-colors duration-300 shrink-0">
-                        ${p.price.toFixed(2)}
+                        ৳{p.price.toFixed(2)}
                       </div>
                     </div>
 
@@ -670,7 +669,7 @@ export default function Home() {
       {/* Message Us Section */}
       <section className="bg-[#E3E8CD] relative z-10 py-16 pb-24">
         <div className="container mx-auto px-6">
-          
+
           <div className="text-center mb-12 reveal anim-fade-up">
             <h2 className="text-5xl md:text-6xl font-bold text-[#11311F] drop-shadow-sm tracking-wide" style={{ fontFamily: "'Bebas Neue', sans-serif" }}>
               Your Words <span className="text-[#F0A500]">Matter</span>
@@ -716,7 +715,7 @@ export default function Home() {
                   <p className="text-[#8B9B91] font-semibold text-[10px] uppercase tracking-[0.2em] mb-1.5">Direct Contact</p>
                   <h4 className="text-[#0A4027] text-[22px] font-bold mb-1.5 tracking-tight">+880 1234 567890</h4>
                   <p className="text-[#4A6B4D] text-[13px] font-medium mb-6 leading-relaxed max-w-[200px] mx-auto">Scan with your phone camera or click below to chat.</p>
-                  
+
                   <a href="#" className="inline-flex items-center justify-center gap-2 w-full bg-[#25D366] hover:bg-[#20bd5a] text-white px-6 py-3.5 rounded-full font-bold text-sm shadow-[0_8px_20px_rgba(37,211,102,0.3)] transition-all hover:-translate-y-1">
                     <svg className="w-5 h-5" viewBox="0 0 24 24" fill="currentColor">
                       <path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"></path>

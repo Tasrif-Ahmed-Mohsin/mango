@@ -5,23 +5,43 @@ const secret = new TextEncoder().encode(
   process.env.JWT_SECRET || "your-super-secret-key-change-in-production"
 );
 
-// Hardcoded admin credentials for now (replace with DB in production)
-const ADMIN_CREDENTIALS = {
-  email: "admin@agricommerce.com",
-  password: "admin123", // In production, use hashed password!
-};
+// Simple in-memory rate limiting
+const rateLimitMap = new Map<string, { count: number; resetTime: number }>();
+const MAX_ATTEMPTS = 5;
+const WINDOW_MS = 15 * 60 * 1000; // 15 minutes
 
 export async function POST(request: Request) {
   try {
+    // Basic rate limiting by IP (using x-forwarded-for if behind proxy, or remote addr)
+    const ip = request.headers.get("x-forwarded-for") || "unknown-ip";
+    const now = Date.now();
+    
+    let rateData = rateLimitMap.get(ip);
+    if (!rateData || now > rateData.resetTime) {
+      rateData = { count: 0, resetTime: now + WINDOW_MS };
+    }
+    
+    if (rateData.count >= MAX_ATTEMPTS) {
+      return Response.json({ error: "Too many login attempts. Please try again later." }, { status: 429 });
+    }
+
     const { email, password } = await request.json();
+
+    const adminEmail = process.env.ADMIN_EMAIL || "admin@agricommerce.com";
+    const adminPassword = process.env.ADMIN_PASSWORD || "admin123";
 
     // Verify credentials
     if (
-      email !== ADMIN_CREDENTIALS.email ||
-      password !== ADMIN_CREDENTIALS.password
+      email !== adminEmail ||
+      password !== adminPassword
     ) {
+      rateData.count += 1;
+      rateLimitMap.set(ip, rateData);
       return Response.json({ error: "Invalid credentials" }, { status: 401 });
     }
+
+    // Successful login, clear rate limit
+    rateLimitMap.delete(ip);
 
     // Create JWT token
     const token = await new SignJWT({

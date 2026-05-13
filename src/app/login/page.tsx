@@ -5,8 +5,8 @@ import Link from "next/link";
 
 export default function LoginPage() {
   const router = useRouter();
-  const [email, setEmail] = useState("admin@agricommerce.com");
-  const [password, setPassword] = useState("admin123");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
 
@@ -51,13 +51,6 @@ export default function LoginPage() {
             {error}
           </div>
         )}
-
-        {/* Demo Credentials */}
-        <div className="mb-6 p-4 bg-blue-50 border border-blue-200 rounded-lg text-sm text-blue-700">
-          <strong>Demo Credentials:</strong>
-          <p>Email: admin@agricommerce.com</p>
-          <p>Password: admin123</p>
-        </div>
 
         {/* Login Form */}
         <form onSubmit={handleSubmit} className="space-y-6">

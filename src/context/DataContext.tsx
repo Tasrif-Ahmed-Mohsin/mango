@@ -2,7 +2,7 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
 
 export type Category = { id: string, name: string, description?: string, icon: string, image?: string, bgColor?: string };
-export type Product = { id: string, categoryId: string, name: string, price: number, description?: string, stock?: number, unit?: string, farmer?: string, image?: string, emoji?: string, tag?: string, tagColor?: string };
+export type Product = { id: string, categoryId: string, name: string, price: number, description?: string, stock?: number, unit?: string, farmer?: string, image?: string, emoji?: string, tag?: string, tagColor?: string, reviews?: { rating: number, comment: string, userName: string, userImage?: string, createdAt: string }[] };
 
 type DataContextType = {
   categories: Category[];
