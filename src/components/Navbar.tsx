@@ -20,6 +20,7 @@ export default function Navbar() {
     const handleScroll = () => {
       setIsScrolled(window.scrollY > 0);
     };
+
     handleScroll();
     window.addEventListener("scroll", handleScroll);
     return () => window.removeEventListener("scroll", handleScroll);
@@ -33,10 +34,7 @@ export default function Navbar() {
 
   return (
     <header
-      className={`sticky top-0 z-50 transition-all duration-500 ${isScrolled
-          ? "bg-white/80 backdrop-blur-lg border-b border-gray-200/50 shadow-[0_4px_20px_rgba(0,0,0,0.05)] py-2 md:py-3"
-          : "bg-[#FAD65F] py-3 md:py-5"
-        }`}
+      className={`sticky top-0 z-50 bg-[#FAD65F] transition-all duration-500 ${isScrolled ? "py-2 md:py-3" : "py-3 md:py-5"}`}
     >
       <div className="container mx-auto px-6">
         <div className="flex justify-between items-center">
@@ -145,10 +143,7 @@ export default function Navbar() {
 
         {/* Mobile Navigation Dropdown */}
         <div className={`lg:hidden overflow-hidden transition-all duration-300 ease-in-out ${isMobileMenuOpen ? "max-h-[22rem] opacity-100 mt-4" : "max-h-0 opacity-0"}`}>
-          <div className={`flex flex-col gap-2 font-semibold text-lg tracking-[0.05em] text-[#0A4027] rounded-xl p-3 border ${isScrolled
-            ? "bg-[#FAD65F]/95 backdrop-blur-xl border-[#E7B93A]/35 shadow-[0_12px_30px_rgba(120,88,0,0.12)]"
-            : "bg-[#FAD65F]/95 backdrop-blur-sm border-[#0A4027]/10 shadow-inner"
-            }`} style={{ fontFamily: "'Bebas Neue', sans-serif" }}>
+          <div className="flex flex-col gap-2 font-semibold text-lg tracking-[0.05em] text-[#0A4027] rounded-xl p-3 border bg-[#FAD65F]/95 backdrop-blur-sm border-[#0A4027]/10 shadow-inner" style={{ fontFamily: "'Bebas Neue', sans-serif" }}>
             {navLinks.map((link) => (
               <Link
                 key={link.path}
